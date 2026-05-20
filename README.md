@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="screenshots/banner.png" alt="项目 Banner" width="800">
+<img src="screenshots/banner.png" alt="项目 Banner" width="400">
 
 **一个给小学生练习加减乘除的web应用，可以定制化自动生成计算题练习。随便靠AI把前端做的好看点，就是为了能让孩子能每天多练几题……**
 
