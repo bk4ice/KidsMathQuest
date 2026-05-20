@@ -2,9 +2,9 @@
 
 <div align="center">
 
-<img src="screenshots/banner.png" alt="项目 Banner" width="400">
+<img src="screenshots/banner.png" alt="项目 Banner" width="300">
 
-**一个给小学生练习加减乘除的web应用，可以定制化自动生成计算题练习。随便靠AI把前端做的好看点，就是为了能让孩子能每天多练几题……**
+**一个给小学生练习加减乘除的web应用，可以定制化自动生成计算题练习。顺便靠AI把前端做的好看点，就是为了能让孩子能每天多练几题……**
 
 [![Docker Hub](https://img.shields.io/badge/Docker%20Hub-bllxk%2Fkidsmathquest-blue?logo=docker)](https://hub.docker.com/r/bllxk/kidsmathquest-backend)
 [![React](https://img.shields.io/badge/React-18-61dafb?logo=react)](https://react.dev)
@@ -41,7 +41,7 @@ KidsMathQuest 是一个面向 6-12 岁儿童的数学学习应用，采用**家�
 
 ### 儿童端功能
 
-<img src="screenshots/child-practice.png" alt="儿童端答题界面" width="800">
+<img src="screenshots/child-practice.png" alt="儿童端答题界面" width="600">
 
 | 功能模块 | 说明 |
 |---------|------|
@@ -55,10 +55,12 @@ KidsMathQuest 是一个面向 6-12 岁儿童的数学学习应用，采用**家�
 
 <div align="center">
 
-<img src="screenshots/login-page.png" alt="登录页面" width="800">
+<img src="screenshots/login-page.png" alt="登录页面" width="600">
+
 *登录页面*
 
-<img src="screenshots/result-page.png" alt="练习结果与奖励" width="800">
+<img src="screenshots/result-page.png" alt="练习结果与奖励" width="600">
+
 *练习结果与奖励*
 
 <!-- [TODO: 试卷打印页截图] -->
