@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700&display=swap');
+
+/* Maruko Gothic CJK JP - CDN 字体 */
+@font-face {
+  font-family: 'MarukoGothicCJKjp-Regular';
+  src: url(https://cdn.jsdmirror.com/gh/max32002/maruko-gothic@1.015/webfont/CJK%20JP/MarukoGothicCJKjp-Regular.woff2) format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MarukoGothicCJKjp-Medium';
+  src: url(https://cdn.jsdmirror.com/gh/max32002/maruko-gothic@1.015/webfont/CJK%20JP/MarukoGothicCJKjp-Medium.woff2) format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MarukoGothicCJKjp-Bold';
+  src: url(https://cdn.jsdmirror.com/gh/max32002/maruko-gothic@1.015/webfont/CJK%20JP/MarukoGothicCJKjp-Bold.woff2) format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MarukoGothicCJKjp-Black';
+  src: url(https://cdn.jsdmirror.com/gh/max32002/maruko-gothic@1.015/webfont/CJK%20JP/MarukoGothicCJKjp-Black.woff2) format("woff2");
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* 字体 - 完整后备链：本地 > CDN > 系统默认 */
+  --animal-font: Nunito, 'MarukoGothicCJKjp-Medium', 'Noto Sans SC', -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+
+  /* 主色 (薄荷青绿) */
+  --animal-primary:        #19c8b9;
+  --animal-primary-hover:  #3dd4c6;
+  --animal-primary-active: #11a89b;
+  --animal-primary-bg:     #e6f9f6;
+
+  /* 文字 (温暖棕色系) */
+  --animal-text:           #794f27;
+  --animal-text-body:      #725d42;
+  --animal-text-secondary: #9f927d;
+  --animal-text-muted:     #8a7b66;
+  --animal-text-disabled:  #c4b89e;
+
+  /* 背景 (奶油米白) */
+  --animal-bg:             #f8f8f0;
+  --animal-bg-content:     rgb(247, 243, 223);
+  --animal-bg-disabled:    #f0ece2;
+
+  /* 边框 */
+  --animal-border:         #c4b89e;
+  --animal-border-hover:   #a89878;
+
+  /* 圆角 */
+  --animal-radius-sm:      12px;
+  --animal-radius:         18px;
+  --animal-radius-lg:      24px;
+  --animal-radius-pill:    50px;
+
+  /* 3D 阴影 */
+  --animal-shadow-btn:     #bdaea0;
+  --animal-shadow-input:   #d4c9b4;
+  --animal-shadow-switch:  #5a9e1e;
+
+  /* 游戏特殊色 */
+  --animal-focus-yellow:   #ffcc00;
+  --animal-focus-yellow-d: #e0b800;
+  --animal-sidebar-active: #B7C6E5;
+  --animal-sidebar-hover:  #d6dff0;
+
+  /* 状态 */
+  --animal-success:        #6fba2c;
+  --animal-warning:        #f5c31c;
+  --animal-error:          #e05a5a;
+
+  /* 动效 */
+  --animal-ease:           cubic-bezier(0.4, 0, 0.2, 1);
+  --animal-duration-fast:  0.15s;
+  --animal-duration:       0.25s;
+  --animal-duration-slow:  0.35s;
+}
+
+body {
+  font-family: var(--animal-font);
+  background-color: var(--animal-bg);
+  color: var(--animal-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 游戏按键立体阴影通用类 */
+.animal-btn-3d {
+  box-shadow: 0 5px 0 0 var(--animal-shadow-btn);
+  transition: all var(--animal-duration) var(--animal-ease);
+}
+
+.animal-btn-3d:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 0 0 var(--animal-shadow-btn);
+}
+
+.animal-btn-3d:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 0 var(--animal-shadow-btn);
+}
+
+/* 输入框 3D 阴影 */
+.animal-input-3d {
+  box-shadow: 0 3px 0 0 var(--animal-shadow-input);
+  transition: all var(--animal-duration) var(--animal-ease);
+}
+
+.animal-input-3d:focus {
+  border-color: var(--animal-focus-yellow);
+  box-shadow: 0 3px 0 0 var(--animal-focus-yellow-d), 0 0 0 3px rgba(255, 204, 0, 0.15);
+}
+
+/* 渐现动画 */
+@keyframes animal-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-animal-fade-up {
+  animation: animal-fade-up 0.5s var(--animal-ease) forwards;
+}
+
