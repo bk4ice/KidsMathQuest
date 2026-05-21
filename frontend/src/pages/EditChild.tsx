@@ -85,9 +85,12 @@ export const EditChild: React.FC = () => {
 
       const data = await response.json();
       console.log('Upload success, data:', data);
-      const fullAvatarUrl = `${config.API_BASE_URL}${data.data.url}`;
-      console.log('Setting avatarUrl to:', fullAvatarUrl);
-      setFormData(prev => ({ ...prev, avatarUrl: fullAvatarUrl }));
+      // 存储时仅保存相对路径，例如 /uploads/xxx.png
+      const relativeUrl = data.data.url;
+      console.log('Setting avatarUrl to:', relativeUrl);
+      setFormData(prev => ({ ...prev, avatarUrl: relativeUrl }));
+      // 预览时需要加上 API 地址
+      setPreviewUrl(`${config.API_BASE_URL}${relativeUrl}`);
     } catch (err: any) {
       console.error('Upload error:', err);
       setError(err.message);

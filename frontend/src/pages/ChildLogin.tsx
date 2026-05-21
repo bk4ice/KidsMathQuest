@@ -134,11 +134,19 @@ export const ChildLogin: React.FC = () => {
     }
 
     const fallback = getDefaultAvatar(selectedChild.id);
+    
+    let avatarUrl = selectedChild.avatarUrl;
+    if (avatarUrl && (avatarUrl.includes('localhost') || avatarUrl.includes('127.0.0.1'))) {
+      const uploadsIndex = avatarUrl.indexOf('/uploads/');
+      if (uploadsIndex !== -1) {
+        avatarUrl = avatarUrl.substring(uploadsIndex);
+      }
+    }
 
-    return selectedChild.avatarUrl
+    return avatarUrl
       ? {
           type: 'image' as const,
-          src: selectedChild.avatarUrl.startsWith('http') ? selectedChild.avatarUrl : `${config.API_BASE_URL}${selectedChild.avatarUrl}`,
+          src: avatarUrl.startsWith('http') ? avatarUrl : `${config.API_BASE_URL}${avatarUrl}`,
           accent: fallback.accent,
         }
       : {
@@ -228,6 +236,19 @@ export const ChildLogin: React.FC = () => {
                 {children.map((child) => {
                   const isSelected = selectedChildId === child.id;
                   const fallback = getDefaultAvatar(child.id);
+                  
+                  // 处理头像 URL，防止数据库中存的是旧的 localhost 地址
+                  let avatarUrl = child.avatarUrl;
+                  if (avatarUrl && (avatarUrl.includes('localhost') || avatarUrl.includes('127.0.0.1'))) {
+                    const uploadsIndex = avatarUrl.indexOf('/uploads/');
+                    if (uploadsIndex !== -1) {
+                      avatarUrl = avatarUrl.substring(uploadsIndex);
+                    }
+                  }
+                  
+                  const finalAvatarUrl = avatarUrl 
+                    ? (avatarUrl.startsWith('http') ? avatarUrl : `${config.API_BASE_URL}${avatarUrl}`)
+                    : null;
 
                   return (
                     <button
@@ -246,9 +267,9 @@ export const ChildLogin: React.FC = () => {
                           className={`flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-4 border-white shadow-lg transition-transform group-hover:rotate-3`}
                           style={{ backgroundColor: isSelected ? '#fff' : fallback.accent + '33' }}
                         >
-                          {child.avatarUrl ? (
+                          {finalAvatarUrl ? (
                             <img
-                              src={child.avatarUrl.startsWith('http') ? child.avatarUrl : `${config.API_BASE_URL}${child.avatarUrl}`}
+                              src={finalAvatarUrl}
                               alt={child.name}
                               className="h-full w-full object-cover"
                               style={{ animation: 'kmq-soft-float 4.8s ease-in-out infinite' }}

@@ -102,17 +102,23 @@ export const ParentDashboard: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {children.map((child) => {
               const defaultAvatar = getDefaultAvatar(child.id);
-              const avatarUrl = child.avatarUrl?.startsWith('http')
-                ? child.avatarUrl
-                : child.avatarUrl
-                ? `${config.API_BASE_URL}${child.avatarUrl}`
+              let avatarUrl = child.avatarUrl;
+              if (avatarUrl && (avatarUrl.includes('localhost') || avatarUrl.includes('127.0.0.1'))) {
+                const uploadsIndex = avatarUrl.indexOf('/uploads/');
+                if (uploadsIndex !== -1) {
+                  avatarUrl = avatarUrl.substring(uploadsIndex);
+                }
+              }
+
+              const finalAvatarUrl = avatarUrl 
+                ? (avatarUrl.startsWith('http') ? avatarUrl : `${config.API_BASE_URL}${avatarUrl}`)
                 : null;
 
               return (
                 <div key={child.id} className="bg-white rounded-lg shadow p-6">
                   <div className="flex items-center mb-4">
-                    {avatarUrl ? (
-                      <img src={avatarUrl} alt={child.name} className="w-16 h-16 rounded-full mr-4 object-cover" />
+                    {finalAvatarUrl ? (
+                      <img src={finalAvatarUrl} alt={child.name} className="w-16 h-16 rounded-full mr-4 object-cover" />
                     ) : (
                       <div className="w-16 h-16 rounded-full flex items-center justify-center text-3xl mr-4" style={{ backgroundColor: `${defaultAvatar.accent}20` }}>
                         {defaultAvatar.emoji}

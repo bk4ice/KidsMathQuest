@@ -51,8 +51,11 @@ export const AddChild: React.FC = () => {
       }
 
       const data = await response.json();
-      const fullAvatarUrl = `${config.API_BASE_URL}${data.data.url}`;
-      setFormData(prev => ({ ...prev, avatarUrl: fullAvatarUrl }));
+      // 存储时仅保存相对路径，例如 /uploads/xxx.png
+      const relativeUrl = data.data.url;
+      setFormData(prev => ({ ...prev, avatarUrl: relativeUrl }));
+      // 预览时需要加上 API 地址
+      setPreviewUrl(`${config.API_BASE_URL}${relativeUrl}`);
     } catch (err: any) {
       setError(err.message);
     } finally {
