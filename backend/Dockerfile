@@ -12,9 +12,6 @@ COPY . .
 RUN npx prisma generate
 RUN npm run build
 
-# Make start script executable
-RUN chmod +x start.sh
-
 # Add labels for Docker Hub
 LABEL maintainer="bllxk"
 LABEL description="KidsMathQuest Backend - Node.js API server with Prisma ORM and SQLite database"
@@ -23,4 +20,4 @@ LABEL repository="https://github.com/bk4ice/KidsMathQuest"
 
 EXPOSE 5000
 
-CMD ["./start.sh"]
+CMD ["sh", "-c", "mkdir -p /app/data && if [ ! -f '/app/data/dev.db' ]; then npx prisma db push --skip-generate; fi && npm start"]

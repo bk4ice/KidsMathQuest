@@ -380,18 +380,23 @@ export class FormulasGenerator {
 
   public generate(): string[] {
     const slist: string[] = [];
-    while (true) {
+    let retries = 0;
+    const maxRetries = this.number * 1000; // Allow a reasonable number of attempts
+
+    while (slist.length < this.number && retries < maxRetries) {
+      retries++;
       const formula = this.__getformula();
       if (formula) {
         slist.push(formula);
       }
-      if (slist.length === this.number) {
-        break;
-      }
+    }
+
+    if (slist.length < this.number) {
+      console.warn(`Could only generate ${slist.length}/${this.number} questions after ${retries} attempts. Please check constraints.`);
     }
 
     slist.sort(() => Math.random() - 0.5);
-    this.data_list = slist.slice(0, this.number);
+    this.data_list = slist;
     return this.data_list;
   }
 }

@@ -363,22 +363,45 @@ export class ParentService {
 
     const numPapers = config.numberOfPapers || 1;
 
-    // 如果提供了 paperList，使用 paperList；否则使用单个配置
-    const effectivePaperList = paperList && paperList.length > 0 ? paperList : [{
-      step: config.step,
-      numberOfFormulas: config.numberOfFormulas,
-      whereIsResult: config.whereIsResult,
-      formulaList: formulaList,
-      resultMinValue: config.resultMinValue,
-      resultMaxValue: config.resultMaxValue,
-      customFormulaList: customFormulaList
-    }];
+    // 优先使用请求中提供的 paperList，如果没有则从数据库中的 paperListData 恢复，最后才回退到基础配置
+    let effectivePaperList = paperList;
+    
+    if (!effectivePaperList || effectivePaperList.length === 0) {
+      if (config.paperListData) {
+        try {
+          effectivePaperList = JSON.parse(config.paperListData);
+          console.log('Using saved paperListData for paper generation');
+        } catch (e) {
+          console.error('Failed to parse paperListData:', e);
+        }
+      }
+    }
+
+    if (!effectivePaperList || effectivePaperList.length === 0) {
+      console.log('Using fallback config for paper generation');
+      effectivePaperList = [{
+        step: config.step,
+        numberOfFormulas: config.numberOfFormulas,
+        whereIsResult: config.whereIsResult,
+        formulaList: formulaList,
+        resultMinValue: config.resultMinValue,
+        resultMaxValue: config.resultMaxValue,
+        customFormulaList: customFormulaList
+      }];
+    }
+
+    console.log('Generating paper with', effectivePaperList.length, 'config(s)');
 
     for (let p = 0; p < numPapers; p++) {
       let questions: string[] = [];
 
       // 遍历 paperList 中的每个题型配置
       for (const paperConfig of effectivePaperList) {
+        console.log('Processing config item:', {
+          mode: paperConfig.customFormulaList ? 'manual' : 'auto',
+          count: paperConfig.numberOfFormulas || (paperConfig.customFormulaList?.length)
+        });
+        
         if (paperConfig.customFormulaList) {
           // 手动添加模式：直接使用 customFormulaList
           const customQuestions = paperConfig.customFormulaList.map((item: any) => item.formula);
@@ -400,6 +423,11 @@ export class ParentService {
             remainder: config.remainder,
             solution: config.solution
           });
+          
+          if (generatedQuestions.length < paperConfig.numberOfFormulas) {
+             console.warn(`Only generated ${generatedQuestions.length}/${paperConfig.numberOfFormulas} questions for a config item. Check constraints!`);
+          }
+          
           const questionStrings = generatedQuestions.map(q => q.question);
           questions.push(...questionStrings);
         }
