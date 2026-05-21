@@ -20,6 +20,7 @@ import { PracticeConfig } from './pages/PracticeConfig';
 import { ChildHistory } from './pages/ChildHistory';
 import { ChildBadges } from './pages/ChildBadges';
 import { WrongQuestions } from './pages/WrongQuestions';
+import { Cursor } from 'animal-island-ui';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode; requireParent?: boolean }> = ({ 
   children, 
@@ -84,7 +85,14 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/child-login" element={<ChildLogin />} />
+          <Route 
+            path="/child-login" 
+            element={
+              <Cursor>
+                <ChildLogin />
+              </Cursor>
+            } 
+          />
           <Route
             path="/dashboard"
             element={
@@ -169,7 +177,9 @@ function App() {
             path="/child/dashboard"
             element={
               <ProtectedRoute>
-                <ChildDashboard />
+                <Cursor>
+                  <ChildDashboard />
+                </Cursor>
               </ProtectedRoute>
             }
           />
@@ -177,7 +187,9 @@ function App() {
             path="/practice/:sessionId"
             element={
               <ProtectedRoute>
-                <Practice />
+                <Cursor>
+                  <Practice />
+                </Cursor>
               </ProtectedRoute>
             }
           />
@@ -185,7 +197,9 @@ function App() {
             path="/practice/:sessionId/result"
             element={
               <ProtectedRoute>
-                <Result />
+                <Cursor>
+                  <Result />
+                </Cursor>
               </ProtectedRoute>
             }
           />
@@ -193,7 +207,9 @@ function App() {
             path="/child/history"
             element={
               <ProtectedRoute>
-                <ChildHistory />
+                <Cursor>
+                  <ChildHistory />
+                </Cursor>
               </ProtectedRoute>
             }
           />
@@ -201,7 +217,9 @@ function App() {
             path="/child/badges"
             element={
               <ProtectedRoute>
-                <ChildBadges />
+                <Cursor>
+                  <ChildBadges />
+                </Cursor>
               </ProtectedRoute>
             }
           />
@@ -209,7 +227,9 @@ function App() {
             path="/child/wrong-questions"
             element={
               <ProtectedRoute>
-                <WrongQuestions />
+                <Cursor>
+                  <WrongQuestions />
+                </Cursor>
               </ProtectedRoute>
             }
           />

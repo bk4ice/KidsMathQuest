@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { ChevronLeft } from 'lucide-react';
 import { Button, Card, Typewriter, Table, Modal, Icon } from '../components/ui';
-import { Cursor } from 'animal-island-ui';
 
 export const ChildHistory: React.FC = () => {
   const navigate = useNavigate();
@@ -139,8 +138,7 @@ export const ChildHistory: React.FC = () => {
   }
 
   return (
-    <Cursor>
-      <div className="relative min-h-screen overflow-hidden bg-cover bg-center px-4 py-8" style={{ backgroundImage: 'url(/common-bg.png)' }}>
+    <div className="relative min-h-screen overflow-hidden bg-cover bg-center px-4 py-8" style={{ backgroundImage: 'url(/common-bg.png)' }}>
       <style>{`
         @keyframes npc-float {
           0%, 100% { transform: translateY(0px); }
@@ -335,6 +333,5 @@ export const ChildHistory: React.FC = () => {
         </div>
       </Modal>
     </div>
-    </Cursor>
   );
 };

@@ -13,7 +13,6 @@ import {
   Footer,
   Icon
 } from '../components/ui';
-import { Cursor } from 'animal-island-ui';
 
 export const ChildDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -120,20 +119,17 @@ export const ChildDashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <Cursor>
-        <div className="flex min-h-screen items-center justify-center bg-[#f8f8f0]">
+      <div className="flex min-h-screen items-center justify-center bg-[#f8f8f0]">
           <div className="flex flex-col items-center gap-4">
             <div className="h-12 w-12 animate-spin rounded-full border-4 border-[#19c8b9] border-t-transparent"></div>
             <p className="font-bold text-[#794f27]">正在登岛中...</p>
           </div>
-        </div>
-      </Cursor>
+      </div>
     );
   }
 
   return (
-    <Cursor>
-      <div className="relative min-h-screen overflow-hidden bg-[#f8f8f0] text-[#794f27]">
+    <div className="relative min-h-screen overflow-hidden bg-[#f8f8f0] text-[#794f27]">
       <style>{`
         @keyframes kmq-soft-float {
           0%, 100% { transform: translateY(0px); }
@@ -371,7 +367,6 @@ export const ChildDashboard: React.FC = () => {
 
       <Footer className="fixed bottom-0 left-0 right-0 z-0 opacity-60" />
     </div>
-    </Cursor>
   );
 };
 

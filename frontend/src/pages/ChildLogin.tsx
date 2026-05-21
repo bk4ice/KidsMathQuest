@@ -8,7 +8,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { api } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { config } from '../config';
-import { Cursor } from 'animal-island-ui';
 import { Icon } from '../components/ui';
 
 type ChildLoginOption = {
@@ -187,8 +186,7 @@ export const ChildLogin: React.FC = () => {
   };
 
   return (
-    <Cursor>
-      <div className="relative min-h-screen overflow-hidden bg-[#f7f3df] text-[#6f4d2d]" style={{ fontFamily: 'Nunito, "MarukoGothicCJKjp-Medium", "Noto Sans SC", -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif' }}>
+    <div className="relative min-h-screen overflow-hidden bg-[#f7f3df] text-[#6f4d2d]" style={{ fontFamily: 'Nunito, "MarukoGothicCJKjp-Medium", "Noto Sans SC", -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif' }}>
       <style>{`
         @keyframes kmq-cloud-drift {
           0%, 100% { transform: translateX(0px) translateY(0px); }
@@ -396,6 +394,5 @@ export const ChildLogin: React.FC = () => {
         </div>
       </div>
     </div>
-    </Cursor>
   );
 };

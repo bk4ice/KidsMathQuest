@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Coins, CalendarDays, Leaf, Sparkles, Star, Trophy, Target } from 'lucide-react';
 import { api } from '../services/api';
 import { Button, Card, Typewriter } from '../components/ui';
-import { Cursor } from 'animal-island-ui';
 
 type BadgeRecord = {
   id: string;
@@ -685,10 +684,9 @@ export const ChildBadges: React.FC = () => {
   }
 
   return (
-    <Cursor>
-      <div
-        className="relative min-h-screen overflow-hidden bg-cover bg-center px-4 py-6 md:px-6 md:py-8"
-        style={{ backgroundImage: 'url(/common-bg.png)' }}
+    <div
+      className="relative min-h-screen overflow-hidden bg-cover bg-center px-4 py-6 md:px-6 md:py-8"
+      style={{ backgroundImage: 'url(/common-bg.png)' }}
     >
       <style>{`
         @keyframes badgeFloat {
@@ -868,6 +866,5 @@ export const ChildBadges: React.FC = () => {
         </div>
       </div>
     </div>
-    </Cursor>
   );
 };

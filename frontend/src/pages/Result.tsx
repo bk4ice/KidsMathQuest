@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../services/api';
 import { ChevronLeft } from 'lucide-react';
 import { Button, Card, Typewriter, Icon } from '../components/ui';
-import { Cursor } from 'animal-island-ui';
 
 export const Result: React.FC = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
@@ -76,8 +75,7 @@ export const Result: React.FC = () => {
   }
 
   return (
-    <Cursor>
-      <div className="relative min-h-screen overflow-hidden bg-cover bg-center flex items-center justify-center px-4" style={{ backgroundImage: 'url(/result-bg.jpg)' }}>
+    <div className="relative min-h-screen overflow-hidden bg-cover bg-center flex items-center justify-center px-4" style={{ backgroundImage: 'url(/result-bg.jpg)' }}>
       <style>{`
         @keyframes star-float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -223,6 +221,5 @@ export const Result: React.FC = () => {
         </Card>
       </div>
     </div>
-    </Cursor>
   );
 };

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../services/api';
-import { Cursor } from 'animal-island-ui';
 
 export const ChildStats: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -75,8 +74,7 @@ export const ChildStats: React.FC = () => {
   }
 
   return (
-    <Cursor>
-      <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100">
       <nav className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <button onClick={() => navigate('/dashboard')} className="text-blue-500 hover:text-blue-700">
@@ -221,6 +219,5 @@ export const ChildStats: React.FC = () => {
         </div>
       )}
     </div>
-    </Cursor>
   );
 };

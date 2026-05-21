@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../services/api';
 import { ChevronLeft } from 'lucide-react';
 import { Button, Card, Input, Icon } from '../components/ui';
-import { Cursor } from 'animal-island-ui';
 
 export const Practice: React.FC = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
@@ -136,8 +135,7 @@ export const Practice: React.FC = () => {
   const progress = ((currentQuestionIndex + 1) / session.questionInstances.length) * 100;
 
   return (
-    <Cursor>
-      <div className="relative min-h-screen overflow-hidden bg-cover bg-center flex items-center justify-center px-4" style={{ backgroundImage: 'url(/practice-bg.png)' }}>
+    <div className="relative min-h-screen overflow-hidden bg-cover bg-center flex items-center justify-center px-4" style={{ backgroundImage: 'url(/practice-bg.png)' }}>
       <style>{`
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
@@ -332,7 +330,6 @@ export const Practice: React.FC = () => {
         }
       `}</style>
     </div>
-    </Cursor>
   );
 };
 
