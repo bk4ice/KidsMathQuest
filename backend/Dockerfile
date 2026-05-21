@@ -6,7 +6,7 @@ RUN apk add --no-cache openssl-dev openssl
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 
 COPY . .
 RUN npx prisma generate
