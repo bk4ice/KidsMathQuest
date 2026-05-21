@@ -50,6 +50,7 @@ interface PaperConfig {
   fileNameGeneratedRule: string;
   generateMode: number;
   customFormulaList: string | null;
+  paperListData: string | null;
   isDefault: boolean;
   isActive: boolean;
 }
@@ -162,6 +163,9 @@ export const PaperConfig: React.FC = () => {
   };
 
   const loadConfigData = (config: PaperConfig) => {
+    const parsedFormulaList = JSON.parse(config.formulaList);
+    const parsedCustomFormulaList = config.customFormulaList ? JSON.parse(config.customFormulaList) : [{ formula: '' }];
+
     setFormData({
       step: config.step.toString(),
       numberOfFormulas: config.numberOfFormulas,
@@ -176,12 +180,46 @@ export const PaperConfig: React.FC = () => {
       paperTitle: config.paperTitle,
       paperSubTitle: config.paperSubTitle,
       fileNameGeneratedRule: config.fileNameGeneratedRule,
-      formulaList: JSON.parse(config.formulaList),
+      formulaList: parsedFormulaList,
       resultMinValue: config.resultMinValue,
       resultMaxValue: config.resultMaxValue,
       generateMode: config.generateMode.toString(),
-      customFormulaList: config.customFormulaList ? JSON.parse(config.customFormulaList) : [{ formula: '' }]
+      customFormulaList: parsedCustomFormulaList
     });
+
+    // 恢复 paperList（从 paperListData 恢复，如果不存在则从配置参数重建）
+    if (config.paperListData) {
+      try {
+        const restoredPaperList = JSON.parse(config.paperListData);
+        setPaperList(restoredPaperList);
+      } catch (error) {
+        console.error('Failed to parse paperListData:', error);
+        // 如果解析失败，从配置参数重建
+        setPaperList([]);
+      }
+    } else {
+      // 如果没有保存的 paperListData，从配置参数重建
+      if (config.generateMode === 2) {
+        const validFormulas = parsedCustomFormulaList.filter((item: any) => item.formula && item.formula.trim());
+        if (validFormulas.length > 0) {
+          setPaperList([{
+            customFormulaList: validFormulas,
+            numberOfFormulas: validFormulas.length
+          }]);
+        } else {
+          setPaperList([]);
+        }
+      } else {
+        setPaperList([{
+          step: config.step,
+          numberOfFormulas: config.numberOfFormulas,
+          whereIsResult: config.whereIsResult,
+          formulaList: parsedFormulaList,
+          resultMinValue: config.resultMinValue,
+          resultMaxValue: config.resultMaxValue
+        }]);
+      }
+    }
   };
 
   const changeStep = (val: string) => {
@@ -231,6 +269,8 @@ export const PaperConfig: React.FC = () => {
       }];
       console.log('新的 paperList:', newPaperList);
       setPaperList(newPaperList);
+      // 同时更新 formData.customFormulaList 以便保存
+      setFormData({ ...formData, customFormulaList });
       console.log('状态已更新');
       alert(`成功添加 ${customFormulaList.length} 道题目`);
     } else {
@@ -297,6 +337,8 @@ export const PaperConfig: React.FC = () => {
       return;
     }
     setPaperList([]);
+    // 同时清空 formData.customFormulaList 以便保存
+    setFormData({ ...formData, customFormulaList: [{ formula: '' }] });
   };
 
   const buildConfigData = () => ({
@@ -317,7 +359,8 @@ export const PaperConfig: React.FC = () => {
     resultMinValue: formData.resultMinValue,
     resultMaxValue: formData.resultMaxValue,
     generateMode: parseInt(formData.generateMode),
-    customFormulaList: formData.customFormulaList.length > 0 ? JSON.stringify(formData.customFormulaList) : null
+    customFormulaList: formData.customFormulaList.length > 0 ? JSON.stringify(formData.customFormulaList) : null,
+    paperListData: paperList.length > 0 ? JSON.stringify(paperList) : null
   });
 
   // 保存当前参数到当前选中的配置（更新，不创建新的）

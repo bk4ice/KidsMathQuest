@@ -50,12 +50,31 @@ export function startCronJobs() {
 
         if (existingSession) continue;
 
+        // 计算 targetCount（实际题目数量）
+        let targetCount = paperConfig.numberOfFormulas;
+        if (paperConfig.paperListData) {
+          try {
+            const paperList = JSON.parse(paperConfig.paperListData);
+            targetCount = paperList.reduce((sum: number, item: any) => {
+              if (item.customFormulaList) {
+                return sum + item.customFormulaList.length;
+              } else {
+                return sum + item.numberOfFormulas;
+              }
+            }, 0);
+          } catch (e) {
+            console.error('Failed to calculate targetCount from paperListData:', e);
+            // 回退到使用 numberOfFormulas
+            targetCount = paperConfig.numberOfFormulas;
+          }
+        }
+
         await prisma.practiceSession.create({
           data: {
             childId: child.id,
             paperConfigId: paperConfig.id,
             configVersion: practiceConfig.version,
-            targetCount: paperConfig.numberOfFormulas,
+            targetCount: targetCount,
             status: 'pending'
           }
         });

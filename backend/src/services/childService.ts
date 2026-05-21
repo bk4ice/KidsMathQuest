@@ -1,9 +1,34 @@
 import prisma from '../config/database';
 import { QuestionGeneratorService } from './questionGenerator';
-import { PaperConfig } from '../types';
+import { PaperConfig, GeneratedQuestion } from '../types';
 import { AppError } from '../middleware/errorHandler';
 
 const questionGenerator = new QuestionGeneratorService();
+
+// Helper function to evaluate simple arithmetic expressions
+function evaluateFormula(formula: string): string {
+  try {
+    // Replace Chinese operators with JavaScript operators
+    let expression = formula
+      .replace(/×/g, '*')
+      .replace(/÷/g, '/')
+      .replace(/=/g, '');
+
+    // Evaluate the expression
+    const result = eval(expression);
+
+    // Handle division results to ensure clean answers
+    if (result.toString().includes('.')) {
+      // Round to 2 decimal places if it's a decimal
+      return result.toFixed(2).replace(/\.00$/, '');
+    }
+
+    return result.toString();
+  } catch (error) {
+    console.error('Failed to evaluate formula:', formula, error);
+    return '0';
+  }
+}
 
 export class ChildService {
   async getTodayPractice(childId: string) {
@@ -49,7 +74,7 @@ export class ChildService {
     });
 
     // 如果有未完成的 session，检查其对应的 paperConfig 是否仍然 active 且版本匹配
-    const pendingSession = todaySessions.find(s => s.status !== 'completed');
+    const pendingSession = todaySessions.find((s: any) => s.status !== 'completed');
     if (pendingSession) {
       // 检查 session 的 paperConfig 是否仍然 active
       const sessionPaperConfig = await prisma.paperConfig.findUnique({
@@ -67,7 +92,7 @@ export class ChildService {
     }
 
     // 检查今日已完成次数是否达到限制
-    const completedCount = todaySessions.filter(s => s.status === 'completed').length;
+    const completedCount = todaySessions.filter((s: any) => s.status === 'completed').length;
     if (completedCount >= practiceConfig.dailyFrequency) {
       // 返回一个标记表示今日已完成
       return {
@@ -91,13 +116,32 @@ export class ChildService {
       } as any;
     }
 
+    // 计算 targetCount（实际题目数量）
+    let targetCount = paperConfig.numberOfFormulas;
+    if (paperConfig.paperListData) {
+      try {
+        const paperList = JSON.parse(paperConfig.paperListData);
+        targetCount = paperList.reduce((sum: number, item: any) => {
+          if (item.customFormulaList) {
+            return sum + item.customFormulaList.length;
+          } else {
+            return sum + item.numberOfFormulas;
+          }
+        }, 0);
+      } catch (e) {
+        console.error('Failed to calculate targetCount from paperListData:', e);
+        // 回退到使用 numberOfFormulas
+        targetCount = paperConfig.numberOfFormulas;
+      }
+    }
+
     // 创建新 session
     const createdSession = await prisma.practiceSession.create({
       data: {
         childId,
         paperConfigId: paperConfig.id,
         configVersion: practiceConfig.version,
-        targetCount: paperConfig.numberOfFormulas,
+        targetCount: targetCount,
         status: 'pending'
       }
     });
@@ -140,37 +184,105 @@ export class ChildService {
     }
 
     console.log('Generating questions for session...');
+    console.log('paperConfig.paperListData exists:', !!session.paperConfig.paperListData);
 
     try {
-      let formulaList;
-      try {
-        formulaList = JSON.parse(session.paperConfig.formulaList);
-      } catch (e) {
-        console.error('Failed to parse formulaList:', session.paperConfig.formulaList);
-        throw new AppError('Invalid formulaList configuration', 400);
+      let questions: GeneratedQuestion[] = [];
+
+      // 检查是否保存了 paperListData（用户手动添加的题目配置）
+      if (session.paperConfig.paperListData) {
+        console.log('Using saved paperListData');
+        try {
+          const paperList = JSON.parse(session.paperConfig.paperListData);
+          console.log('Parsed paperList length:', paperList.length);
+
+          // 遍历 paperList 中的每一份配置，生成题目
+          for (const paperConfig of paperList) {
+            console.log('Processing paperConfig:', paperConfig);
+            let configQuestions: GeneratedQuestion[] = [];
+
+            if (paperConfig.customFormulaList) {
+              // 手动添加模式：直接使用自定义公式
+              console.log('Manual mode with customFormulaList');
+              configQuestions = paperConfig.customFormulaList.map((item: any) => ({
+                question: item.formula,
+                answer: evaluateFormula(item.formula)
+              }));
+            } else {
+              // 自动生成模式：使用配置参数生成
+              console.log('Auto mode with config parameters');
+              let formulaList;
+              try {
+                formulaList = Array.isArray(paperConfig.formulaList) ? paperConfig.formulaList : JSON.parse(paperConfig.formulaList);
+              } catch (e) {
+                console.error('Failed to parse formulaList:', paperConfig.formulaList);
+                continue;
+              }
+
+              const config: PaperConfig = {
+                step: paperConfig.step,
+                formulaList: formulaList,
+                resultMinValue: paperConfig.resultMinValue,
+                resultMaxValue: paperConfig.resultMaxValue,
+                numberOfFormulas: paperConfig.numberOfFormulas,
+                whereIsResult: paperConfig.whereIsResult,
+                enableBrackets: session.paperConfig.enableBrackets,
+                carry: session.paperConfig.carry,
+                abdication: session.paperConfig.abdication,
+                remainder: session.paperConfig.remainder,
+                solution: session.paperConfig.solution
+              };
+
+              console.log('Generating questions with config:', config);
+              configQuestions = questionGenerator.generateQuestions(config);
+              console.log('Generated configQuestions:', configQuestions.length);
+            }
+
+            questions = questions.concat(configQuestions);
+            console.log('Total questions so far:', questions.length);
+          }
+
+          console.log('Generated questions from paperList:', questions.length);
+        } catch (e) {
+          console.error('Failed to parse paperListData:', e);
+          // 如果解析失败，回退到使用配置参数
+          console.log('Falling back to config parameters');
+        }
       }
 
-      console.log('Parsed formulaList:', formulaList);
+      // 如果没有 paperListData 或解析失败，使用原来的逻辑
+      if (questions.length === 0) {
+        console.log('Using config parameters to generate questions');
+        let formulaList;
+        try {
+          formulaList = JSON.parse(session.paperConfig.formulaList);
+        } catch (e) {
+          console.error('Failed to parse formulaList:', session.paperConfig.formulaList);
+          throw new AppError('Invalid formulaList configuration', 400);
+        }
 
-      const config: PaperConfig = {
-        step: session.paperConfig.step,
-        formulaList: formulaList,
-        resultMinValue: session.paperConfig.resultMinValue,
-        resultMaxValue: session.paperConfig.resultMaxValue,
-        numberOfFormulas: session.paperConfig.numberOfFormulas,
-        whereIsResult: session.paperConfig.whereIsResult,
-        enableBrackets: session.paperConfig.enableBrackets,
-        carry: session.paperConfig.carry,
-        abdication: session.paperConfig.abdication,
-        remainder: session.paperConfig.remainder,
-        solution: session.paperConfig.solution
-      };
+        console.log('Parsed formulaList:', formulaList);
 
-      console.log('Config:', config);
+        const config: PaperConfig = {
+          step: session.paperConfig.step,
+          formulaList: formulaList,
+          resultMinValue: session.paperConfig.resultMinValue,
+          resultMaxValue: session.paperConfig.resultMaxValue,
+          numberOfFormulas: session.paperConfig.numberOfFormulas,
+          whereIsResult: session.paperConfig.whereIsResult,
+          enableBrackets: session.paperConfig.enableBrackets,
+          carry: session.paperConfig.carry,
+          abdication: session.paperConfig.abdication,
+          remainder: session.paperConfig.remainder,
+          solution: session.paperConfig.solution
+        };
 
-      const questions = questionGenerator.generateQuestions(config);
+        console.log('Config:', config);
 
-      console.log('Generated questions:', questions.length);
+        questions = questionGenerator.generateQuestions(config);
+
+        console.log('Generated questions:', questions.length);
+      }
 
       if (!questions || !Array.isArray(questions) || questions.length === 0) {
         console.error('Failed to generate questions');
@@ -189,7 +301,7 @@ export class ChildService {
         });
       }
 
-      // 自动创建一份 PaperRecord，让家长在“历史试卷”中能看到
+      // 自动创建一份 PaperRecord，让家长在"历史试卷"中能看到
       await prisma.paperRecord.create({
         data: {
           childId,

@@ -76,6 +76,7 @@ model PaperConfig {
   fileNameGeneratedRule String            @default("title") @map("file_name_generated_rule")
   generateMode          Int               @default(1) @map("generate_mode")
   customFormulaList     String?           @map("custom_formula_list")
+  paperListData         String?           @map("paper_list_data")
   isDefault             Boolean           @default(false) @map("is_default")
   isActive              Boolean           @default(false) @map("is_active")
   createdAt             DateTime          @default(now()) @map("created_at")
