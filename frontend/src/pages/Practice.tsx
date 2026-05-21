@@ -214,7 +214,7 @@ export const Practice: React.FC = () => {
             <div className="flex flex-wrap items-center justify-center gap-8 mb-10">
               <div 
                 className="text-[100px] sm:text-[140px] font-black leading-none text-[#794f27] select-none tracking-tighter"
-                style={{ fontFamily: '"MarukoGothicCJKjp-Black", "Nunito", sans-serif' }}
+                style={{ fontFamily: '"MarukoGothicCJKsc-Black", "Nunito", sans-serif' }}
               >
                 {currentQuestion.questionText.replace('=', '')}
                 <span className="text-[#19c8b9] mx-4">=</span>

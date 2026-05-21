@@ -4,11 +4,11 @@
 
 ## 字体文件列表
 
-### Maruko Gothic CJK JP
-- `MarukoGothicCJKjp-Regular.woff2` - 常规字重
-- `MarukoGothicCJKjp-Medium.woff2` - 中等字重
-- `MarukoGothicCJKjp-Bold.woff2` - 粗体字重
-- `MarukoGothicCJKjp-Black.woff2` - 黑体字重
+### Maruko Gothic CJK SC
+- `MarukoGothicCJKsc-Regular.woff2` - 常规字重
+- `MarukoGothicCJKsc-Medium.woff2` - 中等字重
+- `MarukoGothicCJKsc-Bold.woff2` - 粗体字重
+- `MarukoGothicCJKsc-Black.woff2` - 黑体字重
 
 ### Nunito
 - `Nunito-Regular.woff2` - 常规字重 (400)
@@ -25,15 +25,15 @@
 
 ## 下载字体文件
 
-### Maruko Gothic CJK JP
+### Maruko Gothic CJK SC
 访问以下链接下载：
-- https://cdn.jsdmirror.com/gh/max32002/maruko-gothic@1.015/webfont/CJK%20JP/
+- https://cdn.jsdmirror.com/gh/max32002/maruko-gothic@1.015/webfont/CJK%20SC/
 
 将以下文件下载到 `public/fonts/` 目录：
-- MarukoGothicCJKjp-Regular.woff2
-- MarukoGothicCJKjp-Medium.woff2
-- MarukoGothicCJKjp-Bold.woff2
-- MarukoGothicCJKjp-Black.woff2
+- MarukoGothicCJKsc-Regular.woff2
+- MarukoGothicCJKsc-Medium.woff2
+- MarukoGothicCJKsc-Bold.woff2
+- MarukoGothicCJKsc-Black.woff2
 
 ### Nunito
 访问 Google Fonts 下载或使用以下链接：
