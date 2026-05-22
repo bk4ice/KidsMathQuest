@@ -129,7 +129,7 @@ export const Result: React.FC = () => {
             <div className="inline-block relative">
                <h1 
                  className="text-6xl sm:text-8xl font-black mb-6 text-[#794f27] tracking-tighter"
-                 style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}
+                 style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}
                >
                  完成啦！
                </h1>

@@ -32,7 +32,7 @@ export const WrongQuestions: React.FC = () => {
       render: (value: string) => (
         <span 
           className="text-lg font-black text-[#794f27]"
-          style={{ fontFamily: '"MarukoGothicCJKjp-Medium", "Nunito", sans-serif' }}
+          style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}
         >
           {value}
         </span>
@@ -123,7 +123,7 @@ export const WrongQuestions: React.FC = () => {
             <div className="inline-block relative">
                <h1 
                  className="text-5xl sm:text-7xl font-black mb-4 text-[#794f27] tracking-tight"
-                 style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}
+                 style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}
                >
                  错题本
                </h1>

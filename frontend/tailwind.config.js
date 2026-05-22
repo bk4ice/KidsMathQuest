@@ -5,7 +5,7 @@ export default {
       fontFamily: {
         sans: [
           "Nunito",
-          "'MarukoGothicCJKjp-Medium'",
+          "'MarukoGothic'",
           "'Noto Sans SC'",
           "-apple-system",
           "'PingFang SC'",

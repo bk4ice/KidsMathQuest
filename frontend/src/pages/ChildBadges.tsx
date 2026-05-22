@@ -534,7 +534,7 @@ const BadgeMedal: React.FC<{
             y="110"
             textAnchor="middle"
             fill={unlocked ? '#fffdf4' : '#8f8270'}
-            fontFamily="Nunito, 'Noto Sans SC', 'MarukoGothicCJKjp-Bold', sans-serif"
+            fontFamily="Nunito, 'Noto Sans SC', 'MarukoGothic', sans-serif"
             fontSize="20"
             fontWeight="900"
           >
@@ -546,11 +546,11 @@ const BadgeMedal: React.FC<{
       </div>
 
       <div className="-mt-1 space-y-1 px-2">
-        <div className="text-base font-black text-[#6e4a27]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>
+        <div className="text-base font-black text-[#6e4a27]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
           {slot.title}
         </div>
-        <div className="text-sm font-bold text-[#8a7b66]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>{slot.description}</div>
-        <div className={`inline-flex items-center rounded-full px-3 py-1 text-[11px] font-extrabold ${unlocked ? 'bg-[#f5c31c] text-[#725d42]' : 'bg-[#f0ece2] text-[#a89878]'}`} style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>
+        <div className="text-sm font-bold text-[#8a7b66]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>{slot.description}</div>
+        <div className={`inline-flex items-center rounded-full px-3 py-1 text-[11px] font-extrabold ${unlocked ? 'bg-[#f5c31c] text-[#725d42]' : 'bg-[#f0ece2] text-[#a89878]'}`} style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
           {unlocked ? '已获得' : '未解锁'}
           {earnedAt ? <span className="ml-2 text-[10px] font-bold opacity-80">{new Date(earnedAt).toLocaleDateString()}</span> : null}
         </div>
@@ -651,7 +651,7 @@ export const ChildBadges: React.FC = () => {
       <div className="flex min-h-screen items-center justify-center bg-[#f8f8f0] px-4">
         <Card className="flex w-full max-w-md flex-col items-center gap-4 !rounded-[32px] !p-8 text-center">
           <div className="h-14 w-14 animate-spin rounded-full border-4 border-[#f7cd67] border-t-transparent" />
-          <p className="text-lg font-bold text-[#794f27]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>正在装饰成就墙...</p>
+          <p className="text-lg font-bold text-[#794f27]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>正在装饰成就墙...</p>
         </Card>
       </div>
     );
@@ -665,10 +665,10 @@ export const ChildBadges: React.FC = () => {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#f7cd67]/30 text-3xl text-[#794f27]">
               ⚠️
             </div>
-            <h1 className="mb-3 text-3xl font-black text-[#794f27]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>
+            <h1 className="mb-3 text-3xl font-black text-[#794f27]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
               成就页加载失败
             </h1>
-            <p className="mb-6 text-lg font-semibold text-[#8a7b66]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>{error}</p>
+            <p className="mb-6 text-lg font-semibold text-[#8a7b66]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>{error}</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Button type="primary" onClick={loadData}>
                 重新加载
@@ -725,14 +725,14 @@ export const ChildBadges: React.FC = () => {
             返回主页
           </Button>
 
-          <div className="hidden items-center gap-2 rounded-full border-2 border-[#c4b89e] bg-[rgb(247,243,223)] px-4 py-2 text-sm font-bold text-[#8a7b66] shadow-[0_4px_10px_rgba(107,92,67,0.42)] md:flex" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>
+          <div className="hidden items-center gap-2 rounded-full border-2 border-[#c4b89e] bg-[rgb(247,243,223)] px-4 py-2 text-sm font-bold text-[#8a7b66] shadow-[0_4px_10px_rgba(107,92,67,0.42)] md:flex" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
             <Sparkles className="h-4 w-4 text-[#f5c31c]" />
             已解锁 {unlockedCount} / {BADGE_SLOTS.length}
           </div>
         </div>
 
         <div className="mb-3 flex justify-center">
-          <Card type="title" className="flex items-center gap-2 border-4 border-[#c4b89e] px-8 py-2.5 text-xl font-black text-[#794f27] shadow-[0_6px_14px_rgba(107,92,67,0.42)]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>
+          <Card type="title" className="flex items-center gap-2 border-4 border-[#c4b89e] px-8 py-2.5 text-xl font-black text-[#794f27] shadow-[0_6px_14px_rgba(107,92,67,0.42)]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
             我的成就
             <Sparkles className="h-5 w-5 text-[#6fba2c]" />
           </Card>
@@ -742,7 +742,7 @@ export const ChildBadges: React.FC = () => {
           <div className="grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-5">
             <aside className="rounded-[28px] border-4 border-[#c4b89e] bg-[rgb(247,243,223)] px-3 py-4 lg:border-r-4 lg:border-[#c4b89e] lg:px-4 lg:py-4">
               <div className="rounded-[24px] border-2 border-[#c4b89e] bg-[rgb(247,243,223)] p-3 shadow-[0_4px_10px_rgba(107,92,67,0.42)]">
-                <div className="mb-2 text-center text-xl font-black text-[#794f27]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>
+                <div className="mb-2 text-center text-xl font-black text-[#794f27]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
                   成长记录
                 </div>
 
@@ -774,11 +774,11 @@ export const ChildBadges: React.FC = () => {
                         key={stat.label}
                         className="rounded-[20px] border-2 border-[#c4b89e] bg-[rgb(247,243,223)] px-3 py-3 shadow-[0_3px_0_0_#bdaea0]"
                       >
-                        <div className="mb-1.5 flex items-center justify-between text-xs font-black text-[#9f927d]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>
+                        <div className="mb-1.5 flex items-center justify-between text-xs font-black text-[#9f927d]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
                           <span>{stat.label}</span>
                           <Icon className="h-3.5 w-3.5" style={{ color: stat.tone }} />
                         </div>
-                        <div className="text-2xl font-black tracking-tight text-[#6e4a27]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>
+                        <div className="text-2xl font-black tracking-tight text-[#6e4a27]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
                           {stat.value}
                         </div>
                       </div>
@@ -786,7 +786,7 @@ export const ChildBadges: React.FC = () => {
                   })}
                 </div>
 
-                <div className="mt-3 rounded-[20px] border-2 border-[#c4b89e] bg-[rgb(247,243,223)] px-3 py-2.5 text-center text-xs font-bold text-[#8a7b66] shadow-[0_3px_0_0_#bdaea0]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>
+                <div className="mt-3 rounded-[20px] border-2 border-[#c4b89e] bg-[rgb(247,243,223)] px-3 py-2.5 text-center text-xs font-bold text-[#8a7b66] shadow-[0_3px_0_0_#bdaea0]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
                   {profile?.name ? `${profile.name}，继续收集更多成就吧！` : '继续收集更多成就吧！'}
                 </div>
               </div>
@@ -794,10 +794,10 @@ export const ChildBadges: React.FC = () => {
 
             <main className="relative rounded-[28px] bg-[rgb(247,243,223)] px-3 py-4 sm:px-4 sm:py-5 lg:px-5 lg:py-5">
               <div className="mb-3 flex flex-col gap-1.5 text-center lg:text-left">
-                <div className="text-2xl font-black leading-tight text-[#794f27] sm:text-[30px]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>
+                <div className="text-2xl font-black leading-tight text-[#794f27] sm:text-[30px]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
                   {profile?.name ? `${profile.name} 的奖章墙` : '我的奖章墙'}
                 </div>
-                <div className="text-base font-bold text-[#9f927d] sm:text-lg" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>
+                <div className="text-base font-bold text-[#9f927d] sm:text-lg" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
                   <Typewriter speed={80} autoPlay>
                     {encouragement}
                   </Typewriter>
@@ -805,18 +805,18 @@ export const ChildBadges: React.FC = () => {
               </div>
 
               <div className="mb-3 flex items-center justify-center lg:justify-start">
-                <div className="rounded-full border-2 border-[#c4b89e] bg-[rgb(247,243,223)] px-3 py-1.5 text-xs font-black text-[#725d42] shadow-[0_3px_0_0_#bdaea0]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>
+                <div className="rounded-full border-2 border-[#c4b89e] bg-[rgb(247,243,223)] px-3 py-1.5 text-xs font-black text-[#725d42] shadow-[0_3px_0_0_#bdaea0]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
                   统计来自成长数据与练习记录汇总
                 </div>
               </div>
 
               {earnedBadges.length === 0 && (
                 <div className="mb-4 rounded-[24px] border-2 border-[#c4b89e] bg-[rgb(247,243,223)] px-4 py-3 text-center shadow-[0_4px_10px_rgba(107,92,67,0.42)]">
-                  <div className="mx-auto mb-2 flex w-fit items-center gap-2 rounded-full bg-[rgb(247,243,223)] px-3 py-1.5 text-xs font-black text-[#8a7b66]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>
+                  <div className="mx-auto mb-2 flex w-fit items-center gap-2 rounded-full bg-[rgb(247,243,223)] px-3 py-1.5 text-xs font-black text-[#8a7b66]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
                     <Sparkles className="h-4 w-4 text-[#f5c31c]" />
                     还没有勋章，先完成一次练习吧！
                   </div>
-                  <p className="text-sm font-semibold text-[#8a7b66]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>完成练习后，勋章墙就会慢慢点亮。</p>
+                  <p className="text-sm font-semibold text-[#8a7b66]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>完成练习后，勋章墙就会慢慢点亮。</p>
                 </div>
               )}
 
@@ -827,13 +827,13 @@ export const ChildBadges: React.FC = () => {
                       <div className="flex items-center gap-3">
                         <div className="h-3.5 w-3.5 rounded-full" style={{ backgroundColor: group.accent }} />
                         <div>
-                          <div className="text-lg font-black text-[#6e4a27]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>
+                          <div className="text-lg font-black text-[#6e4a27]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
                             {group.title}
                           </div>
-                          <div className="text-sm font-semibold text-[#9f927d]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>{group.description}</div>
+                          <div className="text-sm font-semibold text-[#9f927d]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>{group.description}</div>
                         </div>
                       </div>
-                      <div className="text-xs font-bold uppercase tracking-[0.18em] text-[#b39f7f]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>
+                      <div className="text-xs font-bold uppercase tracking-[0.18em] text-[#b39f7f]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
                         {group.badges.filter((badge) => badge.unlocked).length} / {group.badges.length}
                       </div>
                     </div>

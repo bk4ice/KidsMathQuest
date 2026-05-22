@@ -64,7 +64,7 @@ export const ChildHistory: React.FC = () => {
       render: (value: string) => (
         <span 
           className="text-lg font-black text-[#794f27] px-4 py-1 bg-white/50 rounded-full border-2 border-[#f0e8d8] shadow-sm"
-          style={{ fontFamily: '"MarukoGothicCJKjp-Medium", "Nunito", sans-serif' }}
+          style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}
         >
           {new Date(value).toLocaleDateString()}
         </span>
@@ -177,7 +177,7 @@ export const ChildHistory: React.FC = () => {
             <div className="inline-block relative">
                <h1 
                  className="text-5xl sm:text-7xl font-black mb-4 text-[#794f27] tracking-tight"
-                 style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}
+                 style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}
                >
                  练习历史
                </h1>
@@ -255,7 +255,7 @@ export const ChildHistory: React.FC = () => {
       {/* 详情弹窗 */}
       <Modal isOpen={isModalOpen} onClose={closeDetail}>
         <div className="p-6">
-          <h2 className="text-2xl font-black mb-6 text-[#794f27]" style={{ fontFamily: '"MarukoGothicCJKjp-Bold", "Nunito", sans-serif' }}>
+          <h2 className="text-2xl font-black mb-6 text-[#794f27]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
             练习详情
           </h2>
           
