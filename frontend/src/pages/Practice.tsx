@@ -135,7 +135,13 @@ export const Practice: React.FC = () => {
   const progress = ((currentQuestionIndex + 1) / session.questionInstances.length) * 100;
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-cover bg-center flex items-center justify-center px-4" style={{ backgroundImage: 'url(/practice-bg.png)' }}>
+    <div
+      className="relative min-h-screen overflow-hidden bg-cover bg-center flex items-center justify-center px-4"
+      style={{
+        backgroundImage: 'url(/practice-bg.png)',
+        fontFamily: 'Nunito, "MarukoGothic", "Noto Sans SC", -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif',
+      }}
+    >
       <style>{`
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
@@ -214,7 +220,7 @@ export const Practice: React.FC = () => {
             <div className="flex flex-wrap items-center justify-center gap-8 mb-10">
               <div 
                 className="text-[100px] sm:text-[140px] font-black leading-none text-[#794f27] select-none tracking-tighter"
-                style={{ fontFamily: '"MarukoGothicCJKsc-Black", "Nunito", sans-serif' }}
+                style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}
               >
                 {currentQuestion.questionText.replace('=', '')}
                 <span className="text-[#19c8b9] mx-4">=</span>
