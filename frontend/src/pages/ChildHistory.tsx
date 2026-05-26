@@ -301,7 +301,7 @@ export const ChildHistory: React.FC = () => {
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
                           <p className="font-black text-lg text-[#794f27] mb-2">
-                            {index + 1}. {q.questionText} = ?
+                            {index + 1}. {q.questionText} ?
                           </p>
                           <p className="text-sm text-[#8a7b66]">
                             正确答案: <span className="font-black text-[#6fba2c]">{q.correctAnswer}</span>

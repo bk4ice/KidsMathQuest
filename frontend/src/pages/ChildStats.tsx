@@ -186,7 +186,7 @@ export const ChildStats: React.FC = () => {
                         <div className="flex justify-between items-start">
                           <div>
                             <p className="font-medium">
-                              {index + 1}. {q.questionText} = ?
+                              {index + 1}. {q.questionText} ?
                             </p>
                             <p className="text-sm text-gray-600 mt-1">
                               正确答案: {q.correctAnswer}
