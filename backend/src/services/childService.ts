@@ -443,11 +443,12 @@ export class ChildService {
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
-    // 检查今天是否已经完成过练习
+    // 检查今天是否已经完成过练习（排除当前这次）
     const todayCompleted = await prisma.practiceSession.findFirst({
       where: {
         childId,
         status: 'completed',
+        id: { not: sessionId },
         completedAt: {
           gte: today
         }
