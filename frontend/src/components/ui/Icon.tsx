@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type IconName = 
+export type IconName =
   | 'leaf'
   | 'miles'
   | 'critterpedia'
@@ -14,7 +14,8 @@ export type IconName =
   | 'backspace'
   | 'close'
   | 'eye'
-  | 'target';
+  | 'target'
+  | 'check';
 
 interface IconProps extends React.SVGProps<SVGSVGElement> {
   name: IconName;
@@ -77,6 +78,9 @@ export const Icon: React.FC<IconProps> = ({ name, size = 24, className, ...props
         <circle cx="12" cy="12" r="6" />
         <circle cx="12" cy="12" r="2" />
       </g>
+    ),
+    check: (
+      <path d="M20 6L9 17l-5-5" fill="currentColor" stroke="none" />
     ),
   };
 

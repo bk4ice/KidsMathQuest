@@ -136,7 +136,7 @@ export const Practice: React.FC = () => {
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-cover bg-center flex items-center justify-center px-4"
+      className="kmq-responsive-page relative min-h-screen overflow-hidden bg-cover bg-center flex items-center justify-center px-4"
       style={{
         backgroundImage: 'url(/practice-bg.png)',
         fontFamily: 'Nunito, "MarukoGothic", "Noto Sans SC", -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif',
@@ -162,7 +162,7 @@ export const Practice: React.FC = () => {
       `}</style>
 
       {/* 退出按钮 */}
-      <div className="absolute top-8 left-8 z-20">
+      <div className="absolute top-4 left-4 z-20 sm:top-8 sm:left-8">
         <Button 
           type="default" 
           size="small" 
@@ -173,10 +173,10 @@ export const Practice: React.FC = () => {
         </Button>
       </div>
 
-      <div className="relative w-full max-w-5xl flex flex-col items-center gap-8">
+      <div className="kmq-compact-shell relative w-full max-w-5xl flex flex-col items-center gap-6 sm:gap-8">
         {/* 顶部 HUD 栏 */}
-        <div className="w-full flex justify-between items-center px-4">
-           <Card className="!rounded-full !py-3 !px-6 !bg-white/90 !border-4 !border-[#f0e8d8] flex items-center gap-6 shadow-[0_6px_0_0_#f0e8d8]">
+        <div className="kmq-compact-grid w-full flex flex-wrap items-center justify-between gap-3 px-2 sm:px-4">
+           <Card className="kmq-compact-panel !rounded-full !py-3 !px-6 !bg-white/90 !border-4 !border-[#f0e8d8] flex items-center gap-4 sm:gap-6 shadow-[0_6px_0_0_#f0e8d8]">
               <div className="flex items-center gap-3">
                 <span className="font-black text-lg text-[#9f927d]">进度</span>
                 <div className="w-48 sm:w-64 h-6 bg-[#f0e8d8] rounded-full overflow-hidden p-1.5 border-2 border-[#9f927d]/20 shadow-inner">
@@ -191,7 +191,7 @@ export const Practice: React.FC = () => {
               </div>
            </Card>
 
-           <div className="flex gap-3">
+           <div className="flex flex-wrap justify-end gap-3">
               {[...Array(3)].map((_, i) => (
                 <div 
                   key={i}
@@ -213,13 +213,13 @@ export const Practice: React.FC = () => {
 
         {/* 主答题卡片 */}
         <Card 
-          className={`relative w-full !bg-white !rounded-[50px] !border-[8px] !border-[#f0e8d8] !p-10 sm:!p-16 transition-all duration-300 shadow-[0_15px_0_0_#f0e8d8] ${isShaking ? 'animate-shake' : ''}`}
+          className={`kmq-compact-panel relative w-full !bg-white !rounded-[50px] !border-[8px] !border-[#f0e8d8] !p-8 sm:!p-16 transition-all duration-300 shadow-[0_15px_0_0_#f0e8d8] ${isShaking ? 'animate-shake' : ''}`}
         >
           {/* 题目内容区 */}
           <div className="flex flex-col items-center">
-            <div className="flex flex-wrap items-center justify-center gap-8 mb-10">
-              <div 
-                className="text-[100px] sm:text-[140px] font-black leading-none text-[#794f27] select-none tracking-tighter"
+            <div className="flex flex-wrap items-center justify-center gap-6 mb-8 sm:gap-8 sm:mb-10">
+              <div
+                className="kmq-compact-equation text-[clamp(4.5rem,7vw,8.75rem)] sm:text-[clamp(6rem,10vw,8.75rem)] font-black leading-none text-[#794f27] select-none tracking-tighter"
                 style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}
               >
                 {currentQuestion.questionText.replace('=', '')}
@@ -250,56 +250,143 @@ export const Practice: React.FC = () => {
               </div>
             </div>
             
-            <div className="flex items-center gap-2 bg-[#f0e8d8]/30 px-6 py-2 rounded-full mb-10">
+            <div className="flex items-center gap-2 bg-[#f0e8d8]/30 px-6 py-2 rounded-full mb-8 sm:mb-10">
                <Icon name="sparkle" size={20} className="text-[#f5c31c] fill-current" />
                <p className="text-[#9f927d] font-black text-lg">输入答案并按回车确认</p>
             </div>
 
             {/* 虚拟键盘 - 增强色彩 */}
-            <div className="w-full max-w-2xl">
-              <div className="grid grid-cols-5 sm:grid-cols-6 gap-4">
-                {[
-                  { val: 1, color: '#ff8a8a', shadow: '#e05a5a' },
-                  { val: 2, color: '#889df0', shadow: '#4a5a9a' },
-                  { val: 3, color: '#f7cd67', shadow: '#dfa000' },
-                  { val: 4, color: '#82d5bb', shadow: '#327a93' },
-                  { val: 5, color: '#e59266', shadow: '#b45f45' },
-                  { val: 6, color: '#b77dee', shadow: '#7d4fc0' },
-                  { val: 7, color: '#8ac68a', shadow: '#5a9e1e' },
-                  { val: 8, color: '#fc736d', shadow: '#c94444' },
-                  { val: 9, color: '#19c8b9', shadow: '#11a89b' },
-                  { val: 0, color: '#f5c31c', shadow: '#dba90e' },
-                ].map((item, idx) => (
+            <div className="kmq-compact-grid w-full max-w-2xl">
+              {/* 移动端 5 列布局 */}
+              <div className="grid grid-cols-5 gap-3 sm:hidden">
+                {/* 第一行：1-5 */}
+                {[1, 2, 3, 4, 5].map((val) => (
                   <button
-                    key={item.val}
+                    key={val}
                     type="button"
-                    onClick={() => handleKeyClick(item.val.toString())}
-                    className={`h-20 text-3xl font-black rounded-3xl text-white transition-all hover:-translate-y-1 active:translate-y-2 focus:outline-none focus:ring-4 focus:ring-white/50 ${idx === 9 ? 'sm:col-start-5' : ''}`}
+                    onClick={() => handleKeyClick(val.toString())}
+                    className="kmq-compact-button h-16 text-2xl font-black rounded-3xl text-white transition-all hover:-translate-y-1 active:translate-y-2 focus:outline-none focus:ring-4 focus:ring-white/50"
                     style={{ 
-                      backgroundColor: item.color,
-                      boxShadow: `0 8px 0 0 ${item.shadow}`
+                      backgroundColor: ['#ff8a8a', '#889df0', '#f7cd67', '#82d5bb', '#e59266'][val - 1],
+                      boxShadow: `0 8px 0 0 ${['#e05a5a', '#4a5a9a', '#dfa000', '#327a93', '#b45f45'][val - 1]}`
                     }}
                   >
-                    {item.val}
+                    {val}
+                  </button>
+                ))}
+                {/* 第二行：6-9 + 0 */}
+                {[6, 7, 8, 9].map((val) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => handleKeyClick(val.toString())}
+                    className="kmq-compact-button h-16 text-2xl font-black rounded-3xl text-white transition-all hover:-translate-y-1 active:translate-y-2 focus:outline-none focus:ring-4 focus:ring-white/50"
+                    style={{ 
+                      backgroundColor: ['#b77dee', '#8ac68a', '#fc736d', '#19c8b9'][val - 6],
+                      boxShadow: `0 8px 0 0 ${['#7d4fc0', '#5a9e1e', '#c94444', '#11a89b'][val - 6]}`
+                    }}
+                  >
+                    {val}
                   </button>
                 ))}
                 <button
                   type="button"
+                  onClick={() => handleKeyClick('0')}
+                  className="kmq-compact-button h-16 text-2xl font-black rounded-3xl text-white transition-all hover:-translate-y-1 active:translate-y-2 focus:outline-none focus:ring-4 focus:ring-white/50"
+                  style={{ 
+                    backgroundColor: '#f5c31c',
+                    boxShadow: '0 8px 0 0 #dba90e'
+                  }}
+                >
+                  0
+                </button>
+                {/* 第三行：回车 + backspace */}
+                <button
+                  type="button"
+                  onClick={handleSubmitAnswer}
+                  className="kmq-compact-button h-16 rounded-3xl bg-[#6fba2c] border-4 border-white flex items-center justify-center transition-all hover:-translate-y-1 active:translate-y-2 shadow-[0_8px_0_0_#5a9e1e] col-span-3"
+                >
+                  <Icon name="play" size={28} className="text-white fill-current" />
+                </button>
+                <button
+                  type="button"
                   onClick={() => handleKeyClick('backspace')}
-                  className="h-20 rounded-3xl bg-[#f0e8d8] border-4 border-white flex items-center justify-center transition-all hover:-translate-y-1 active:translate-y-2 shadow-[0_8px_0_0_#d4c9b4] sm:col-start-6"
+                  className="kmq-compact-button h-16 rounded-3xl bg-[#f0e8d8] border-4 border-white flex items-center justify-center transition-all hover:-translate-y-1 active:translate-y-2 shadow-[0_8px_0_0_#d4c9b4] col-span-2"
                 >
                   <Icon name="backspace" size={32} className="text-[#794f27] fill-current" />
                 </button>
+              </div>
+
+              {/* 桌面端 6 列布局 */}
+              <div className="hidden sm:grid grid-cols-6 gap-4">
+                {/* 第一行：1-6 */}
+                {[1, 2, 3, 4, 5, 6].map((val) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => handleKeyClick(val.toString())}
+                    className="kmq-compact-button h-20 text-3xl font-black rounded-3xl text-white transition-all hover:-translate-y-1 active:translate-y-2 focus:outline-none focus:ring-4 focus:ring-white/50"
+                    style={{ 
+                      backgroundColor: ['#ff8a8a', '#889df0', '#f7cd67', '#82d5bb', '#e59266', '#b77dee'][val - 1],
+                      boxShadow: `0 8px 0 0 ${['#e05a5a', '#4a5a9a', '#dfa000', '#327a93', '#b45f45', '#7d4fc0'][val - 1]}`
+                    }}
+                  >
+                    {val}
+                  </button>
+                ))}
+                {/* 第二行：7-9 + 0 + backspace */}
+                {[7, 8, 9].map((val) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => handleKeyClick(val.toString())}
+                    className="kmq-compact-button h-20 text-3xl font-black rounded-3xl text-white transition-all hover:-translate-y-1 active:translate-y-2 focus:outline-none focus:ring-4 focus:ring-white/50"
+                    style={{ 
+                      backgroundColor: ['#8ac68a', '#fc736d', '#19c8b9'][val - 7],
+                      boxShadow: `0 8px 0 0 ${['#5a9e1e', '#c94444', '#11a89b'][val - 7]}`
+                    }}
+                  >
+                    {val}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => handleKeyClick('0')}
+                  className="kmq-compact-button h-20 text-3xl font-black rounded-3xl text-white transition-all hover:-translate-y-1 active:translate-y-2 focus:outline-none focus:ring-4 focus:ring-white/50"
+                  style={{ 
+                    backgroundColor: '#f5c31c',
+                    boxShadow: '0 8px 0 0 #dba90e'
+                  }}
+                >
+                  0
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleKeyClick('backspace')}
+                  className="kmq-compact-button h-20 rounded-3xl bg-[#f0e8d8] border-4 border-white flex items-center justify-center transition-all hover:-translate-y-1 active:translate-y-2 shadow-[0_8px_0_0_#d4c9b4]"
+                >
+                  <Icon name="backspace" size={32} className="text-[#794f27] fill-current" />
+                </button>
+                {/* 第三行：回车居中 */}
+                <div className="col-start-2 col-span-4">
+                  <button
+                    type="button"
+                    onClick={handleSubmitAnswer}
+                    className="kmq-compact-button w-full h-20 rounded-3xl bg-[#6fba2c] border-4 border-white flex items-center justify-center transition-all hover:-translate-y-1 active:translate-y-2 shadow-[0_8px_0_0_#5a9e1e]"
+                  >
+                    <Icon name="play" size={32} className="text-white fill-current" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
           {/* 跳过按钮 - 移到左下角并缩小 */}
-          <div className="absolute bottom-8 left-4">
+          <div className="absolute bottom-4 left-4 sm:bottom-8">
             <button
               type="button"
               onClick={handleSkip}
-              className="group flex items-center gap-2 px-4 py-2 rounded-2xl bg-[#fbf6e8] border-2 border-[#f0e8d8] text-[#9f927d] font-black text-sm transition-all hover:bg-white hover:border-[#ffcc00] hover:text-[#ffcc00] hover:shadow-[0_4px_0_0_#e0b800]"
+              className="kmq-compact-button group flex items-center gap-2 px-4 py-2 rounded-2xl bg-[#fbf6e8] border-2 border-[#f0e8d8] text-[#9f927d] font-black text-sm transition-all hover:bg-white hover:border-[#ffcc00] hover:text-[#ffcc00] hover:shadow-[0_4px_0_0_#e0b800]"
             >
               <Icon name="close" size={16} />
               <span>跳过</span>
@@ -319,12 +406,14 @@ export const Practice: React.FC = () => {
           )}
 
           {/* NPC 角色 */}
-          <div className="absolute -bottom-8 -right-8 w-40 h-40 sm:w-52 sm:h-52 z-10">
-            <img 
-              src="/Blathers.webp" 
-              alt="角色" 
-              className="w-full h-full object-contain animate-[kmq-soft-float_5s_ease-in-out_infinite]"
-            />
+          <div className="kmq-compact-npc absolute -bottom-12 -right-12 w-40 h-40 sm:w-52 sm:h-52 z-10 pointer-events-none">
+            <div className="w-full h-full">
+              <img 
+                src="/Blathers.webp" 
+                alt="角色" 
+                className="w-full h-full object-contain animate-[kmq-soft-float_5s_ease-in-out_infinite]"
+              />
+            </div>
           </div>
         </Card>
       </div>

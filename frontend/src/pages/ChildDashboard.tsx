@@ -129,7 +129,7 @@ export const ChildDashboard: React.FC = () => {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#f8f8f0] text-[#794f27]">
+    <div className="kmq-responsive-page relative min-h-screen overflow-hidden bg-[#f8f8f0] text-[#794f27]">
       <style>{`
         @keyframes kmq-soft-float {
           0%, 100% { transform: translateY(0px); }
@@ -145,7 +145,7 @@ export const ChildDashboard: React.FC = () => {
       <div className="pointer-events-none absolute inset-0 opacity-40 bg-cover bg-center" style={{ backgroundImage: 'url(/common-bg.png)' }} />
 
       {/* 顶部 HUD */}
-      <nav className="relative z-10 mx-auto max-w-[1280px] px-4 py-6 sm:px-8">
+      <nav className="kmq-compact-shell relative z-10 mx-auto max-w-[1280px] px-4 py-6 sm:px-8">
         <div className="flex items-center justify-between">
           <Time />
 
@@ -182,11 +182,11 @@ export const ChildDashboard: React.FC = () => {
         </div>
       </nav>
 
-      <main className="relative z-10 mx-auto max-w-4xl px-4 pb-24 pt-4 sm:px-6">
+      <main className="kmq-compact-shell relative z-10 mx-auto max-w-4xl px-4 pb-24 pt-4 sm:px-6">
         {/* NPC 欢迎区 */}
         <div className="mb-12 flex flex-col items-center justify-center sm:flex-row sm:gap-10">
           <div 
-            className="relative group h-44 w-44 sm:h-52 sm:w-52"
+            className="kmq-compact-hero relative group h-44 w-44 sm:h-52 sm:w-52"
             style={{ animation: 'kmq-soft-float 5s ease-in-out infinite' }}
           >
             <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full border-[8px] border-white bg-[#f7cd67] shadow-[0_12px_0_0_#dfa000]">
@@ -208,12 +208,12 @@ export const ChildDashboard: React.FC = () => {
 
           <div className="relative mt-8 max-w-md sm:mt-0">
             <Card 
-              className="!rounded-[40px] !border-[6px] !border-[#f0e8d8] !bg-white !p-8 shadow-[0_10px_0_0_#f0e8d8]"
+              className="kmq-compact-panel !rounded-[40px] !border-[6px] !border-[#f0e8d8] !bg-white !p-8 shadow-[0_10px_0_0_#f0e8d8]"
               style={{ animation: 'kmq-bubble-float 4s ease-in-out infinite' }}
             >
               <div className="absolute -top-4 left-1/2 h-8 w-8 -translate-x-1/2 rotate-45 border-l-[6px] border-t-[6px] border-[#f0e8d8] bg-white sm:-left-4 sm:top-1/2 sm:-translate-y-1/2 sm:border-b-0 sm:border-l-[6px] sm:border-r-0 sm:border-t-[6px]" />
               
-              <div className="relative text-xl font-black leading-relaxed text-[#794f27]">
+              <div className="kmq-compact-copy relative text-xl font-black leading-relaxed text-[#794f27]">
                 <Typewriter trigger={welcomeMessage} speed={60}>
                   {welcomeMessage}
                 </Typewriter>
@@ -224,18 +224,18 @@ export const ChildDashboard: React.FC = () => {
 
         {/* 核心内容区 */}
         <div className="space-y-8">
-          <Card type="title" color="default" className="!p-1 !border-[6px]" style={{ backgroundColor: 'rgb(247, 243, 223)', borderColor: '#c4b89e' }}>
+          <Card type="title" color="default" className="kmq-compact-panel !p-1 !border-[6px]" style={{ backgroundColor: 'rgb(247, 243, 223)', borderColor: '#c4b89e' }}>
             <div className="rounded-[28px] border-2 border-dashed border-[#c4b89e] bg-white/50 p-6 sm:p-8">
               <div className="mb-8 flex flex-col items-center justify-between gap-4 border-b border-[#794f27]/10 pb-6 sm:flex-row sm:text-left">
                 <div>
-                  <h3 className="text-2xl font-black text-[#654322]">今日挑战</h3>
+                  <h3 className="kmq-compact-title text-2xl font-black text-[#654322]">今日挑战</h3>
                   <p className="mt-1 font-bold text-[#9f927d]">
                     {todayPractice?.status === 'daily_limit_reached' 
                       ? '今天的目标已经达成啦！' 
                       : '完成练习，获取更多积分吧！'}
                   </p>
                 </div>
-                <Card color="app-yellow" className="!rounded-2xl !px-4 !py-2 !font-black !shadow-none flex items-center">
+                <Card color="app-yellow" className="kmq-compact-panel !rounded-2xl !px-4 !py-2 !font-black !shadow-none flex items-center">
                   <Icon name="trophy" size={20} className="mr-2 text-[#f5c31c]" />
                   <span>连续打卡 {profile?.streakDays || 0} 天</span>
                 </Card>
@@ -271,7 +271,7 @@ export const ChildDashboard: React.FC = () => {
                         type="warning"
                         size="large"
                         onClick={handleCompleteSession}
-                        className="w-full !h-20 !text-2xl flex items-center justify-center"
+                        className="kmq-compact-button w-full !h-20 !text-2xl flex items-center justify-center"
                       >
                         <Icon name="trophy" size={32} className="mr-4 fill-current" />
                         <span>结算并领奖</span>
@@ -296,7 +296,7 @@ export const ChildDashboard: React.FC = () => {
                         type="primary"
                         size="large"
                         onClick={handleStartPractice}
-                        className="w-full !h-20 !text-2xl !bg-[#889df0] !text-white !border-[#889df0] !shadow-[0_8px_0_0_#4a5a9a] flex items-center justify-center"
+                        className="kmq-compact-button w-full !h-20 !text-2xl !bg-[#889df0] !text-white !border-[#889df0] !shadow-[0_8px_0_0_#4a5a9a] flex items-center justify-center"
                       >
                         <Icon name="play" size={32} className="mr-4 fill-current" />
                         <span>继续练习</span>
@@ -316,7 +316,7 @@ export const ChildDashboard: React.FC = () => {
                         type="success"
                         size="large"
                         onClick={handleStartPractice}
-                        className="w-full !h-20 !text-2xl flex items-center justify-center"
+                        className="kmq-compact-button w-full !h-20 !text-2xl flex items-center justify-center"
                       >
                         <Icon name="play" size={32} className="mr-4 fill-current" />
                         <span>立即开始练习</span>
@@ -339,7 +339,7 @@ export const ChildDashboard: React.FC = () => {
             </div>
           </Card>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+          <div className="kmq-compact-grid grid grid-cols-1 gap-6 sm:grid-cols-3">
             {[
               { label: '练习历史', name: 'history', color: 'app-teal', path: '/child/history', shadow: '#327a93' },
               { label: '错题本', name: 'critterpedia', color: 'app-pink', path: '/child/wrong-questions', shadow: '#b45f45' },
@@ -348,7 +348,7 @@ export const ChildDashboard: React.FC = () => {
               <Card
                 key={idx}
                 color={item.color as any}
-                className="group relative flex flex-col items-center gap-5 !rounded-[40px] !border-[6px] !border-white !p-8 cursor-pointer transition-all duration-300 hover:-translate-y-2 active:translate-y-1"
+                className="group relative flex flex-col items-center gap-5 !rounded-[40px] !border-[6px] !border-white !p-8 cursor-pointer transition-all duration-300 hover:-translate-y-2 active:translate-y-1 kmq-compact-panel"
                 style={{ boxShadow: `0 10px 0 0 ${item.shadow}` }}
                 onClick={() => navigate(item.path)}
               >
@@ -365,7 +365,7 @@ export const ChildDashboard: React.FC = () => {
         </div>
       </main>
 
-      <Footer className="fixed bottom-0 left-0 right-0 z-0 opacity-60" />
+      <Footer className="kmq-compact-hide-landscape fixed bottom-0 left-0 right-0 z-0 opacity-60" />
     </div>
   );
 };

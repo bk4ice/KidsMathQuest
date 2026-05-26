@@ -685,7 +685,7 @@ export const ChildBadges: React.FC = () => {
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-cover bg-center px-4 py-6 md:px-6 md:py-8"
+      className="kmq-responsive-page relative min-h-screen overflow-hidden bg-cover bg-center px-4 py-6 md:px-6 md:py-8"
       style={{ backgroundImage: 'url(/common-bg.png)' }}
     >
       <style>{`
@@ -714,7 +714,7 @@ export const ChildBadges: React.FC = () => {
 
       <div className="absolute inset-0 bg-[rgb(247,243,223)]/40" />
 
-      <div className="relative mx-auto max-w-[1120px]">
+      <div className="kmq-compact-shell relative mx-auto max-w-[1120px]">
         <div className="mb-3 flex items-center justify-between gap-3">
           <Button
             type="default"
@@ -732,17 +732,17 @@ export const ChildBadges: React.FC = () => {
         </div>
 
         <div className="mb-3 flex justify-center">
-          <Card type="title" className="flex items-center gap-2 border-4 border-[#c4b89e] px-8 py-2.5 text-xl font-black text-[#794f27] shadow-[0_6px_14px_rgba(107,92,67,0.42)]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
+          <Card type="title" className="kmq-compact-panel flex items-center gap-2 border-4 border-[#c4b89e] px-8 py-2.5 text-xl font-black text-[#794f27] shadow-[0_6px_14px_rgba(107,92,67,0.42)]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
             我的成就
             <Sparkles className="h-5 w-5 text-[#6fba2c]" />
           </Card>
         </div>
 
-        <Card className="paper-enter relative overflow-hidden !rounded-[34px] !p-4 shadow-[0_8px_24px_rgba(107,92,67,0.42)] sm:!p-5">
+        <Card className="paper-enter kmq-compact-panel relative overflow-hidden !rounded-[34px] !p-4 shadow-[0_8px_24px_rgba(107,92,67,0.42)] sm:!p-5">
           <div className="grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-5">
-            <aside className="rounded-[28px] border-4 border-[#c4b89e] bg-[rgb(247,243,223)] px-3 py-4 lg:border-r-4 lg:border-[#c4b89e] lg:px-4 lg:py-4">
+            <aside className="kmq-compact-panel rounded-[28px] border-4 border-[#c4b89e] bg-[rgb(247,243,223)] px-3 py-4 lg:border-r-4 lg:border-[#c4b89e] lg:px-4 lg:py-4">
               <div className="rounded-[24px] border-2 border-[#c4b89e] bg-[rgb(247,243,223)] p-3 shadow-[0_4px_10px_rgba(107,92,67,0.42)]">
-                <div className="mb-2 text-center text-xl font-black text-[#794f27]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
+                <div className="kmq-compact-title mb-2 text-center text-xl font-black text-[#794f27]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
                   成长记录
                 </div>
 
@@ -792,12 +792,12 @@ export const ChildBadges: React.FC = () => {
               </div>
             </aside>
 
-            <main className="relative rounded-[28px] bg-[rgb(247,243,223)] px-3 py-4 sm:px-4 sm:py-5 lg:px-5 lg:py-5">
+            <main className="kmq-compact-panel relative rounded-[28px] bg-[rgb(247,243,223)] px-3 py-4 sm:px-4 sm:py-5 lg:px-5 lg:py-5">
               <div className="mb-3 flex flex-col gap-1.5 text-center lg:text-left">
-                <div className="text-2xl font-black leading-tight text-[#794f27] sm:text-[30px]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
+                <div className="kmq-compact-title text-2xl font-black leading-tight text-[#794f27] sm:text-[30px]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
                   {profile?.name ? `${profile.name} 的奖章墙` : '我的奖章墙'}
                 </div>
-                <div className="text-base font-bold text-[#9f927d] sm:text-lg" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
+                <div className="kmq-compact-copy text-base font-bold text-[#9f927d] sm:text-lg" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
                   <Typewriter speed={80} autoPlay>
                     {encouragement}
                   </Typewriter>
@@ -805,7 +805,7 @@ export const ChildBadges: React.FC = () => {
               </div>
 
               <div className="mb-3 flex items-center justify-center lg:justify-start">
-                <div className="rounded-full border-2 border-[#c4b89e] bg-[rgb(247,243,223)] px-3 py-1.5 text-xs font-black text-[#725d42] shadow-[0_3px_0_0_#bdaea0]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
+                <div className="kmq-compact-copy rounded-full border-2 border-[#c4b89e] bg-[rgb(247,243,223)] px-3 py-1.5 text-xs font-black text-[#725d42] shadow-[0_3px_0_0_#bdaea0]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
                   统计来自成长数据与练习记录汇总
                 </div>
               </div>

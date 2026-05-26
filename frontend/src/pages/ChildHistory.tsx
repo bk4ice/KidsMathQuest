@@ -138,7 +138,7 @@ export const ChildHistory: React.FC = () => {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-cover bg-center px-4 py-8" style={{ backgroundImage: 'url(/common-bg.png)' }}>
+    <div className="kmq-responsive-page relative min-h-screen overflow-hidden bg-cover bg-center px-4 py-8" style={{ backgroundImage: 'url(/common-bg.png)' }}>
       <style>{`
         @keyframes npc-float {
           0%, 100% { transform: translateY(0px); }
@@ -150,7 +150,7 @@ export const ChildHistory: React.FC = () => {
       `}</style>
 
       {/* 退出按钮 */}
-      <div className="absolute top-8 left-8 z-20">
+      <div className="absolute top-4 left-4 z-20 sm:top-8 sm:left-8">
         <Button 
           type="default" 
           size="small" 
@@ -161,29 +161,29 @@ export const ChildHistory: React.FC = () => {
         </Button>
       </div>
 
-      <div className="relative w-full max-w-5xl mx-auto pt-16">
+      <div className="kmq-compact-shell relative w-full max-w-5xl mx-auto pt-16">
         {/* 装饰叶子 */}
-        <div className="absolute -top-4 -right-8 w-32 h-32 text-[#6fba2c]/20 rotate-12 pointer-events-none">
+        <div className="kmq-compact-hide-landscape absolute -top-4 -right-8 w-32 h-32 text-[#6fba2c]/20 rotate-12 pointer-events-none">
            <Icon name="sparkle" size={128} fill="currentColor" stroke="none" />
         </div>
         
         {/* 主内容卡片 */}
         <Card 
-          className="relative !rounded-[50px] !border-[8px] !border-white !p-8 sm:!p-12"
+          className="kmq-compact-panel relative !rounded-[50px] !border-[8px] !border-white !p-8 sm:!p-12"
           style={{ backgroundColor: 'rgb(247, 243, 223)', boxShadow: '0 15px 0 0 rgba(107, 92, 67, 0.1)' }}
         >
           {/* 顶部标题区 */}
           <div className="text-center mb-10">
-            <div className="inline-block relative">
+            <div className="kmq-compact-hero inline-block relative">
                <h1 
-                 className="text-5xl sm:text-7xl font-black mb-4 text-[#794f27] tracking-tight"
+                 className="kmq-compact-title text-5xl sm:text-7xl font-black mb-4 text-[#794f27] tracking-tight"
                  style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}
                >
                  练习历史
                </h1>
                <div className="absolute -bottom-2 inset-x-0 h-3 bg-[#f5c31c]/30 rounded-full -z-10" />
             </div>
-            <div className="mt-4 text-xl sm:text-2xl font-black text-[#9f927d] bg-white/30 py-2 px-6 rounded-full inline-block">
+            <div className="kmq-compact-copy mt-4 text-xl sm:text-2xl font-black text-[#9f927d] bg-white/30 py-2 px-6 rounded-full inline-block">
               <Typewriter speed={80} autoPlay>
                 {history.length === 0 ? '还没有练习记录，开始第一次练习吧！' : '看看你的进步吧！'}
               </Typewriter>
@@ -192,7 +192,7 @@ export const ChildHistory: React.FC = () => {
 
           {/* NPC 鼓励区 - 移到右上方 */}
           {history.length > 0 && (
-            <div className="absolute -top-12 -left-6 w-32 h-32 sm:w-40 sm:h-40 npc-float z-10">
+            <div className="kmq-compact-npc absolute -top-16 -left-10 w-32 h-32 sm:w-40 sm:h-40 npc-float z-10 pointer-events-none">
               <div className="relative">
                  <img 
                    src="/ACNH_Isabelle.webp" 
@@ -223,7 +223,7 @@ export const ChildHistory: React.FC = () => {
               <Button
                 type="primary"
                 onClick={() => navigate('/child/dashboard')}
-                className="!rounded-[50px] !px-8 !py-4"
+                className="kmq-compact-button !rounded-[50px] !px-8 !py-4"
               >
                 返回主页
               </Button>

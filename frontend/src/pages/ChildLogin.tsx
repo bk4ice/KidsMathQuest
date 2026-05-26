@@ -186,7 +186,7 @@ export const ChildLogin: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#f7f3df] text-[#6f4d2d]" style={{ fontFamily: 'Nunito, "MarukoGothic", "Noto Sans SC", -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif' }}>
+    <div className="kmq-responsive-page relative min-h-screen overflow-hidden bg-[#f7f3df] text-[#6f4d2d]" style={{ fontFamily: 'Nunito, "MarukoGothic", "Noto Sans SC", -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif' }}>
       <style>{`
         @keyframes kmq-cloud-drift {
           0%, 100% { transform: translateX(0px) translateY(0px); }
@@ -201,10 +201,10 @@ export const ChildLogin: React.FC = () => {
 
       <div className="pointer-events-none absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/login-bg.png)' }} />
 
-      <div className="relative mx-auto flex min-h-screen max-w-[1280px] items-center px-4 py-6 sm:px-6 lg:px-10">
+      <div className="kmq-compact-shell relative mx-auto flex min-h-screen max-w-[1280px] items-start px-4 py-4 sm:items-center sm:px-6 sm:py-6 lg:px-10 lg:py-6">
         <div className="w-full">
           <div className="mb-8 flex justify-center px-2">
-            <div className="relative">
+            <div className="kmq-compact-hero relative">
               <div className="absolute left-1/2 top-[-18px] h-6 w-40 -translate-x-1/2 rounded-full bg-[#d89a46]/50 blur-lg" />
               <div className="absolute left-[12%] top-[-10px] h-6 w-6 rounded-full bg-[#8d5626] shadow-[0_0_0_4px_rgba(255,255,255,0.12)]" />
               <div className="absolute right-[12%] top-[-10px] h-6 w-6 rounded-full bg-[#8d5626] shadow-[0_0_0_4px_rgba(255,255,255,0.12)]" />
@@ -214,23 +214,23 @@ export const ChildLogin: React.FC = () => {
                 style={{ background: 'linear-gradient(180deg, #dfaa58 0%, #c97f38 100%)' }}
               >
                 <div className="pointer-events-none absolute inset-[6px] rounded-[28px] border border-white/15" />
-                <div className="relative text-3xl font-black tracking-[0.02em] text-[#fff8ec] sm:text-4xl">
+                <div className="kmq-compact-title relative text-3xl font-black tracking-[0.02em] text-[#fff8ec] sm:text-4xl">
                   计算小岛
                 </div>
-                <div className="relative mt-1 text-[12px] font-bold text-[#fff0cf]/90 sm:text-sm">
+                <div className="kmq-compact-copy relative mt-1 text-[12px] font-bold text-[#fff0cf]/90 sm:text-sm">
                   ⏬ 选择角色登岛吧，少年！ ⏬
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="mx-auto max-w-[1060px] rounded-[40px] border-0 bg-transparent p-5 shadow-none backdrop-blur-0 sm:p-7">
+          <div className="kmq-compact-panel mx-auto max-w-[1060px] rounded-[40px] border-0 bg-transparent p-5 shadow-none backdrop-blur-0 sm:p-7">
             {loadingChildren ? (
               <div className="rounded-[28px] border border-dashed border-[#d8c7a9] bg-white/20 px-5 py-8 text-center text-sm font-medium text-[#8f7759]">
                 正在加载孩子头像…
               </div>
             ) : children.length > 0 ? (
-              <div className="flex flex-wrap justify-center gap-3">
+              <div className="kmq-compact-grid flex flex-wrap justify-center gap-3">
                 {children.map((child) => {
                   const isSelected = selectedChildId === child.id;
                   const fallback = getDefaultAvatar(child.id);
@@ -353,7 +353,7 @@ export const ChildLogin: React.FC = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="在此输入数字密码"
                         autoComplete="current-password"
-                        className="min-w-0 flex-1 bg-transparent text-xl font-black text-[#794f27] outline-none placeholder:text-[#9f927d]/60 sm:text-2xl"
+                        className="kmq-compact-input min-w-0 flex-1 bg-transparent text-xl font-black text-[#794f27] outline-none placeholder:text-[#9f927d]/60 sm:text-2xl"
                         required
                       />
                     </div>
@@ -373,7 +373,7 @@ export const ChildLogin: React.FC = () => {
                   <button
                     type="submit"
                     disabled={loading || !selectedChildId || !childId.trim() || !password.trim()}
-                    className="group relative flex h-20 w-full items-center justify-center gap-4 rounded-[50px] bg-[#ffcc00] px-8 text-2xl font-black text-[#794f27] shadow-[0_8px_0_0_#e0b800] transition-all duration-200 hover:-translate-y-1 hover:bg-[#ffd633] hover:shadow-[0_10px_0_0_#e0b800] active:translate-y-2 active:shadow-[0_2px_0_0_#e0b800] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="kmq-compact-button group relative flex h-20 w-full items-center justify-center gap-4 rounded-[50px] bg-[#ffcc00] px-8 text-2xl font-black text-[#794f27] shadow-[0_8px_0_0_#e0b800] transition-all duration-200 hover:-translate-y-1 hover:bg-[#ffd633] hover:shadow-[0_10px_0_0_#e0b800] active:translate-y-2 active:shadow-[0_2px_0_0_#e0b800] disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {loading ? (
                       <>

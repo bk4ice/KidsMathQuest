@@ -75,7 +75,7 @@ export const Result: React.FC = () => {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-cover bg-center flex items-center justify-center px-4" style={{ backgroundImage: 'url(/result-bg.jpg)' }}>
+    <div className="kmq-responsive-page relative min-h-screen overflow-hidden bg-cover bg-center flex items-center justify-center px-4" style={{ backgroundImage: 'url(/result-bg.jpg)' }}>
       <style>{`
         @keyframes star-float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -107,7 +107,7 @@ export const Result: React.FC = () => {
       `}</style>
 
       {/* 退出按钮 */}
-      <div className="absolute top-8 left-8 z-20">
+      <div className="absolute top-4 left-4 z-20 sm:top-8 sm:left-8">
         <Button 
           type="default" 
           size="small" 
@@ -118,26 +118,26 @@ export const Result: React.FC = () => {
         </Button>
       </div>
 
-      <div className="relative w-full max-w-3xl">
+      <div className="kmq-compact-shell relative w-full max-w-3xl">
         {/* 主结果卡片 */}
         <Card 
-          className="relative !rounded-[60px] !border-[10px] !border-white !p-10 sm:!p-16 result-zoom-in"
+          className="kmq-compact-panel relative !rounded-[60px] !border-[10px] !border-white !p-10 sm:!p-16 result-zoom-in"
           style={{ backgroundColor: 'rgb(247, 243, 223)', boxShadow: '0 20px 0 0 rgba(107, 92, 67, 0.15)' }}
         >
           {/* 顶部标题区 */}
           <div className="text-center mb-10">
-            <div className="inline-block relative">
+            <div className="kmq-compact-hero inline-block relative">
                <h1 
-                 className="text-6xl sm:text-8xl font-black mb-6 text-[#794f27] tracking-tighter"
+                 className="kmq-compact-title text-6xl sm:text-8xl font-black mb-6 text-[#794f27] tracking-tighter"
                  style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}
                >
                  完成啦！
                </h1>
-               <div className="absolute -top-6 -right-12">
+               <div className="kmq-compact-hide-landscape absolute -top-6 -right-12">
                   <Icon name="sparkle" size={64} className="text-[#f5c31c] animate-pulse fill-current" />
                </div>
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-[#8a7b66] bg-white/40 py-3 px-8 rounded-full inline-block">
+            <div className="kmq-compact-copy text-2xl sm:text-3xl font-black text-[#8a7b66] bg-white/40 py-3 px-8 rounded-full inline-block">
               <Typewriter speed={80} autoPlay>
                 {getEncouragementText()}
               </Typewriter>
@@ -145,7 +145,7 @@ export const Result: React.FC = () => {
           </div>
 
           {/* 星星评分区 - 增大并增加立体感 */}
-          <div className="flex justify-center gap-6 mb-12">
+          <div className="kmq-compact-grid flex justify-center gap-6 mb-12">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="relative">
                 <Icon
@@ -192,14 +192,14 @@ export const Result: React.FC = () => {
             <Button
               type="primary"
               onClick={() => navigate('/child/dashboard')}
-              className="!rounded-[50px] !px-12 !py-6 !text-2xl !bg-[#ffcc00] !text-[#794f27] !border-[#ffcc00] !shadow-[0_8px_0_0_#e0b800]"
+              className="kmq-compact-button !rounded-[50px] !px-12 !py-6 !text-2xl !bg-[#ffcc00] !text-[#794f27] !border-[#ffcc00] !shadow-[0_8px_0_0_#e0b800]"
             >
               返回主页
             </Button>
             <Button
               type="default"
               onClick={() => navigate('/child/wrong-questions')}
-              className="!rounded-[50px] !px-10 !py-6 !text-2xl !bg-[#f0e8d8] !text-[#794f27] !border-white !shadow-[0_8px_0_0_#d4c9b4] flex items-center"
+              className="kmq-compact-button !rounded-[50px] !px-10 !py-6 !text-2xl !bg-[#f0e8d8] !text-[#794f27] !border-white !shadow-[0_8px_0_0_#d4c9b4] flex items-center"
             >
               <Icon name="critterpedia" size={24} className="mr-3" />
               查看错题本
@@ -207,7 +207,7 @@ export const Result: React.FC = () => {
           </div>
 
           {/* NPC 鼓励区 - 移到左下角并增大 */}
-          <div className="absolute -bottom-10 -left-10 w-48 h-48 sm:w-64 sm:h-64 npc-float z-10">
+          <div className="kmq-compact-npc absolute -bottom-14 -left-14 w-48 h-48 sm:w-64 sm:h-64 npc-float z-10 pointer-events-none">
             <img 
               src="/Mamekichi_Tsubukichi.png" 
               alt="角色" 
@@ -215,7 +215,7 @@ export const Result: React.FC = () => {
             />
           </div>
           
-          <div className="absolute -top-10 -right-10 w-32 h-32 opacity-20">
+          <div className="kmq-compact-hide-landscape absolute -top-10 -right-10 w-32 h-32 opacity-20">
              <Icon name="star" size={128} className="text-[#ffcc00] rotate-12 fill-current" />
           </div>
         </Card>
