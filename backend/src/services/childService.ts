@@ -314,7 +314,8 @@ export class ChildService {
       await prisma.practiceSession.update({
         where: { id: sessionId },
         data: {
-          status: 'in_progress'
+          status: 'in_progress',
+          targetCount: questions.length // 同步实际生成的题目数量
         }
       });
 
