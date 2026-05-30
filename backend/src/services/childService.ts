@@ -289,6 +289,10 @@ export class ChildService {
         throw new AppError('Failed to generate questions', 500);
       }
 
+      if (questions.length < session.targetCount) {
+        console.warn(`[Generation] Requested ${session.targetCount} questions, but only generated ${questions.length}. Synchronizing targetCount.`);
+      }
+
       for (let i = 0; i < questions.length; i++) {
         await prisma.questionInstance.create({
           data: {
