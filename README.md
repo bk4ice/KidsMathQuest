@@ -10,8 +10,6 @@
 [![React](https://img.shields.io/badge/React-18-61dafb?logo=react)](https://react.dev)
 [![Node.js](https://img.shields.io/badge/Node.js-18-339933?logo=nodedotjs)](https://nodejs.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Try KidsMathQuest on Socialistic](https://socialistic.ai/api/embed/kidsmathquest-practice-generator-57f816?lang=zh)](https://socialistic.ai/zh/skill/kidsmathquest-practice-generator-57f816?utm_source=github&utm_medium=readme&utm_campaign=20260601-kids-practice-toolsmiths&utm_content=badge)
-
 
 </div>
 
@@ -30,8 +28,8 @@
     - [部署流程图](#部署流程图)
   - [快速开始](#快速开始)
     - [前置要求](#前置要求)
-    - [方式一：Docker Hub 镜像（推荐，5 分钟启动）](#方式一docker-hub-镜像推荐5-分钟启动)
-    - [方式二：本地构建（用于二次开发）](#方式二本地构建用于二次开发)
+    - [方式一：Docker 启动（推荐，5 分钟启动）](#方式一docker-启动推荐5-分钟启动)
+    - [方式二：本地开发](#方式二本地开发)
     - [常用命令](#常用命令)
     - [方式三：在线体验（socialistic.ai）](#方式三在线体验socialisticai)
   - [本地开发指南](#本地开发指南)
@@ -40,8 +38,7 @@
     - [数据库迁移（开发时）](#数据库迁移开发时)
   - [环境变量](#环境变量)
     - [后端 `.env`](#后端-env)
-    - [前端 `.env`](#前端-env)
-    - [使用 PostgreSQL（可选）](#使用-postgresql可选)
+    - [说明](#说明)
   - [项目结构](#项目结构)
   - [常见问题 (FAQ)](#常见问题-faq)
     - [如何修改端口？](#如何修改端口)
@@ -312,11 +309,13 @@ docker-compose down -v
 
 ### 方式三：在线体验（socialistic.ai）
 
-无需安装 Docker，直接在线配置规则、出题、打印试卷：
+如果只是想测试题目的生成功能可以试试
+
+[![Try KidsMathQuest on Socialistic](https://socialistic.ai/api/embed/kidsmathquest-practice-generator-57f816?lang=zh)](https://socialistic.ai/zh/skill/kidsmathquest-practice-generator-57f816?utm_source=github&utm_medium=readme&utm_campaign=20260601-kids-practice-toolsmiths&utm_content=badge)
 
 [🚀 在线试一下](https://socialistic.ai/zh/skill/kidsmathquest-practice-generator-57f816?utm_source=github&utm_medium=readme&utm_campaign=20260601-kids-practice-toolsmiths&utm_content=hyperlink)
 
-适合快速体验 KidsMathQuest 的核心功能，感受配置流程和出题效果。
+适合快速体验交互式的出题功能，感受配置流程和出题效果。
 
 ## 本地开发指南
 
