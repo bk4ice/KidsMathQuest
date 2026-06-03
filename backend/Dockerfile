@@ -20,4 +20,4 @@ LABEL repository="https://github.com/bk4ice/KidsMathQuest"
 
 EXPOSE 5000
 
-CMD ["sh", "-c", "mkdir -p /app/data && if [ ! -f '/app/data/dev.db' ]; then npx prisma db push --skip-generate; fi && npm start"]
+CMD ["sh", "-c", "mkdir -p /app/prisma /app/uploads && if [ ! -f '/app/prisma/dev.db' ]; then npx prisma db push --skip-generate; fi && npm start"]

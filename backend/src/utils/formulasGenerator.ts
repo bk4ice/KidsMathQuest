@@ -380,19 +380,25 @@ export class FormulasGenerator {
 
   public generate(): string[] {
     const slist: string[] = [];
+    const uniqueSet = new Set<string>();
     let retries = 0;
-    const maxRetries = this.number * 1000; // Allow a reasonable number of attempts
+    const maxRetries = Math.max(this.number * 5000, 10000); // 增加重试次数，至少 10000 次
 
     while (slist.length < this.number && retries < maxRetries) {
       retries++;
       const formula = this.__getformula();
-      if (formula) {
+      if (formula && !uniqueSet.has(formula)) {
         slist.push(formula);
+        uniqueSet.add(formula);
       }
     }
 
     if (slist.length < this.number) {
-      console.warn(`Could only generate ${slist.length}/${this.number} questions after ${retries} attempts. Please check constraints.`);
+      console.warn(`Could only generate ${slist.length}/${this.number} unique questions after ${retries} attempts. Please check if constraints are too strict.`);
+      
+      // 如果无法生成足够的唯一题目，且已经尝试了很多次，
+      // 可以在此处决定是否允许少量重复，或者就返回现有的
+      // 目前选择保持现有唯一题目，确保质量
     }
 
     slist.sort(() => Math.random() - 0.5);

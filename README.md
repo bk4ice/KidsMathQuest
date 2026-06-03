@@ -248,7 +248,7 @@ graph TB
 - Docker 20.10+
 - Docker Compose 2.0+
 
-### 方式一：Docker Hub 镜像（推荐，5 分钟启动）
+### 方式一：Docker 启动（推荐，5 分钟启动）
 
 ```bash
 # 1. 克隆项目
@@ -259,36 +259,38 @@ cd KidsMathQuest
 cp .env.example .env
 # 编辑 .env，修改 JWT_SECRET 为强密码
 
-# 3. 一键启动（自动从 Docker Hub 拉取镜像）
+# 3. 优先拉取线上镜像
+docker pull bllxk/kidsmathquest-backend:latest
+docker pull bllxk/kidsmathquest-frontend:latest
+
+# 4. 一键启动
 docker-compose up
 
-# 4. 访问应用
+# 5. 访问应用
 # 家长端登录：http://localhost:3000/login
 # 儿童端登录：http://localhost:3000/child-login
 # 后端 API：http://localhost:5000
 ```
 
-### 方式二：本地构建（用于二次开发）
+> 如果你本地已经有这两个镜像，Docker 会直接使用本地镜像；如果没有，就会先尝试拉取线上镜像。
 
-取消注释 `docker-compose.yml` 中的 `build` 配置：
+### 方式二：本地开发
 
-```yaml
-services:
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-```
-
-然后执行：
+后端和前端都使用同一个根目录 `.env`。
 
 ```bash
-docker-compose build
-docker-compose up
+cp .env.example .env
+
+# 后端
+cd backend
+npm install
+npx prisma db push   # 第一次拉代码后先执行，创建 SQLite 文件和表结构
+npm run dev
+
+# 前端
+cd ../frontend
+npm install
+npm run dev
 ```
 
 ### 常用命令
@@ -322,8 +324,6 @@ docker-compose down -v
 ```bash
 cd backend
 npm install
-cp .env.example .env
-# 编辑 .env 配置
 npm run dev        # 启动开发服务器（带热重载）
 ```
 
@@ -332,8 +332,6 @@ npm run dev        # 启动开发服务器（带热重载）
 ```bash
 cd frontend
 npm install
-cp .env.example .env
-# 编辑 .env 配置 API 地址
 npm run dev        # 启动 Vite 开发服务器
 ```
 
@@ -343,8 +341,8 @@ npm run dev        # 启动 Vite 开发服务器
 
 ```bash
 cd backend
+npx prisma db push        # 首次运行或 schema 变更后同步数据库
 npx prisma migrate dev   # 创建迁移
-npx prisma db push        # 应用 schema 变更
 npx prisma studio         # 可视化数据库管理
 ```
 
@@ -355,29 +353,17 @@ npx prisma studio         # 可视化数据库管理
 | 变量名 | 必填 | 默认值 | 说明 |
 |--------|------|--------|------|
 | `PORT` | 否 | `5000` | 服务监听端口 |
-| `DATABASE_MODE` | 否 | `local` | 数据库模式：`local` 或 `cloud` |
-| `DATABASE_URL` | 是 | - | SQLite 文件路径或 PostgreSQL 连接串 |
+| `FRONTEND_PORT` | 否 | `3000` | 前端开发/容器映射端口 |
+| `DATABASE_URL` | 是 | - | SQLite 文件路径（本地建议 `file:./prisma/dev.db`，Docker 会覆盖为 `/app/prisma/dev.db`） |
 | `JWT_SECRET` | **是** | - | **必须修改！** JWT 签名密钥 |
-| `NODE_ENV` | 否 | `production` | 运行环境 |
+| `NODE_ENV` | 否 | `development` | 运行环境 |
 
-### 前端 `.env`
+### 说明
 
-| 变量名 | 必填 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `VITE_API_BASE_URL` | 否 | `http://localhost:5000` | 后端 API 地址 |
-
-### 使用 PostgreSQL（可选）
-
-1. 修改 `docker-compose.yml` 启用 `cloud` profile
-2. 配置 `.env`：
-   ```
-   DATABASE_MODE=cloud
-   DATABASE_URL=postgresql://user:password@db:5432/kidsmathquest
-   ```
-3. 启动：
-   ```bash
-   docker-compose --profile cloud up
-   ```
+- 前端不再依赖 `VITE_API_BASE_URL`，统一使用相对路径 `/api` 和 `/uploads`
+- 本地开发时，`DATABASE_URL` 保持相对路径 `file:./prisma/dev.db`，这样从 `backend` 目录启动最稳定
+- Docker 会读取根目录 `.env`，并在 `docker-compose.yml` 中覆盖为容器内路径 `file:/app/prisma/dev.db`
+- 如果你已经有现成的 `backend/prisma/dev.db`，直接挂载后就能继续使用
 
 ## 项目结构
 

@@ -1,15 +1,13 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import path from 'path';
+import './config/env';
 import { errorHandler } from './middleware/errorHandler';
 import authRoutes from './routes/auth';
 import parentRoutes from './routes/parent';
 import childRoutes from './routes/child';
 import uploadRoutes from './routes/upload';
 import { startCronJobs } from './utils/cronJobs';
-
-dotenv.config();
 
 const app = express();
 

@@ -289,6 +289,10 @@ export class ChildService {
         throw new AppError('Failed to generate questions', 500);
       }
 
+      if (questions.length < session.targetCount) {
+        console.warn(`[Generation] Requested ${session.targetCount} questions, but only generated ${questions.length}. Synchronizing targetCount.`);
+      }
+
       for (let i = 0; i < questions.length; i++) {
         await prisma.questionInstance.create({
           data: {
@@ -314,7 +318,8 @@ export class ChildService {
       await prisma.practiceSession.update({
         where: { id: sessionId },
         data: {
-          status: 'in_progress'
+          status: 'in_progress',
+          targetCount: questions.length // 同步实际生成的题目数量
         }
       });
 
@@ -443,11 +448,12 @@ export class ChildService {
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
-    // 检查今天是否已经完成过练习
+    // 检查今天是否已经完成过练习（排除当前这次）
     const todayCompleted = await prisma.practiceSession.findFirst({
       where: {
         childId,
         status: 'completed',
+        id: { not: sessionId },
         completedAt: {
           gte: today
         }
