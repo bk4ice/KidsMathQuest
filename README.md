@@ -10,6 +10,7 @@
 [![React](https://img.shields.io/badge/React-18-61dafb?logo=react)](https://react.dev)
 [![Node.js](https://img.shields.io/badge/Node.js-18-339933?logo=nodedotjs)](https://nodejs.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Try KidsMathQuest on Socialistic](https://socialistic.ai/api/embed/kidsmathquest-practice-generator-57f816?lang=zh)](https://socialistic.ai/zh/skill/kidsmathquest-practice-generator-57f816?utm_source=github&utm_medium=readme&utm_campaign=20260601-kids-practice-toolsmiths&utm_content=badge)
 
 
 </div>
@@ -313,7 +314,7 @@ docker-compose down -v
 
 无需安装 Docker，直接在线配置规则、出题、打印试卷：
 
-[🚀 在线试一下](https://socialistic.ai/zh/skill/kidsmathquest-practice-generator-57f816)
+[🚀 在线试一下](https://socialistic.ai/zh/skill/kidsmathquest-practice-generator-57f816?utm_source=github&utm_medium=readme&utm_campaign=20260601-kids-practice-toolsmiths&utm_content=hyperlink)
 
 适合快速体验 KidsMathQuest 的核心功能，感受配置流程和出题效果。
 
