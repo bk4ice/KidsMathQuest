@@ -28,6 +28,9 @@ backend/uploads/*
 
 # Build artifacts
 frontend/dist/
+
+# Local planning/spec docs
+docs/
 backend/dist/
 
 # IDE

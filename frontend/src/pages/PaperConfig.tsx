@@ -27,6 +27,8 @@ interface FormData {
   resultMaxValue: number;
   generateMode: string;
   customFormulaList: { formula: string }[];
+  numberMode: 'integer' | 'decimal';
+  decimalPlaces: number;
 }
 
 interface PaperConfig {
@@ -51,6 +53,8 @@ interface PaperConfig {
   generateMode: number;
   customFormulaList: string | null;
   paperListData: string | null;
+  numberMode: 'integer' | 'decimal';
+  decimalPlaces: number | null;
   isDefault: boolean;
   isActive: boolean;
 }
@@ -79,7 +83,9 @@ export const PaperConfig: React.FC = () => {
     resultMinValue: 1,
     resultMaxValue: 9,
     generateMode: '1',
-    customFormulaList: [{ formula: '' }]
+    customFormulaList: [{ formula: '' }],
+    numberMode: 'integer',
+    decimalPlaces: 2
   });
   const [configs, setConfigs] = useState<PaperConfig[]>([]);
   const [activeConfigId, setActiveConfigId] = useState<string>('');
@@ -184,7 +190,9 @@ export const PaperConfig: React.FC = () => {
       resultMinValue: config.resultMinValue,
       resultMaxValue: config.resultMaxValue,
       generateMode: config.generateMode.toString(),
-      customFormulaList: parsedCustomFormulaList
+      customFormulaList: parsedCustomFormulaList,
+      numberMode: config.numberMode || 'integer',
+      decimalPlaces: config.decimalPlaces ?? 2
     });
 
     // 恢复 paperList（从 paperListData 恢复，如果不存在则从配置参数重建）
@@ -204,7 +212,9 @@ export const PaperConfig: React.FC = () => {
         if (validFormulas.length > 0) {
           setPaperList([{
             customFormulaList: validFormulas,
-            numberOfFormulas: validFormulas.length
+            numberOfFormulas: validFormulas.length,
+            numberMode: config.numberMode || 'integer',
+            decimalPlaces: config.decimalPlaces
           }]);
         } else {
           setPaperList([]);
@@ -216,7 +226,9 @@ export const PaperConfig: React.FC = () => {
           whereIsResult: config.whereIsResult,
           formulaList: parsedFormulaList,
           resultMinValue: config.resultMinValue,
-          resultMaxValue: config.resultMaxValue
+          resultMaxValue: config.resultMaxValue,
+          numberMode: config.numberMode,
+          decimalPlaces: config.decimalPlaces
         }]);
       }
     }
@@ -265,7 +277,9 @@ export const PaperConfig: React.FC = () => {
       
       const newPaperList = [...paperList, {
         customFormulaList,
-        numberOfFormulas: customFormulaList.length
+        numberOfFormulas: customFormulaList.length,
+        numberMode: formData.numberMode,
+        decimalPlaces: formData.numberMode === 'decimal' ? formData.decimalPlaces : null
       }];
       console.log('新的 paperList:', newPaperList);
       setPaperList(newPaperList);
@@ -317,7 +331,9 @@ export const PaperConfig: React.FC = () => {
         whereIsResult: parseInt(whereIsResult),
         formulaList: JSON.parse(JSON.stringify(formulaList)),
         resultMinValue,
-        resultMaxValue
+        resultMaxValue,
+        numberMode: formData.numberMode,
+        decimalPlaces: formData.numberMode === 'decimal' ? formData.decimalPlaces : null
       };
       
       console.log('要添加的配置:', configToAdd);
@@ -359,6 +375,8 @@ export const PaperConfig: React.FC = () => {
     resultMinValue: formData.resultMinValue,
     resultMaxValue: formData.resultMaxValue,
     generateMode: parseInt(formData.generateMode),
+    numberMode: formData.numberMode,
+    decimalPlaces: formData.numberMode === 'decimal' ? formData.decimalPlaces : null,
     customFormulaList: formData.customFormulaList.length > 0 ? JSON.stringify(formData.customFormulaList) : null,
     paperListData: paperList.length > 0 ? JSON.stringify(paperList) : null
   });
@@ -484,6 +502,37 @@ export const PaperConfig: React.FC = () => {
                     手动添加
                   </button>
                 </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label className="block text-gray-700 mb-2">运算模式</label>
+                  <select
+                    value={formData.numberMode}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      numberMode: e.target.value === 'decimal' ? 'decimal' : 'integer'
+                    })}
+                    className="w-full px-3 py-2 border rounded"
+                  >
+                    <option value="integer">整数模式</option>
+                    <option value="decimal">小数模式</option>
+                  </select>
+                </div>
+                {formData.numberMode === 'decimal' && (
+                  <div>
+                    <label className="block text-gray-700 mb-2">小数位数</label>
+                    <select
+                      value={formData.decimalPlaces}
+                      onChange={(e) => setFormData({ ...formData, decimalPlaces: parseInt(e.target.value) })}
+                      className="w-full px-3 py-2 border rounded"
+                    >
+                      <option value={1}>1 位</option>
+                      <option value={2}>2 位</option>
+                      <option value={3}>3 位</option>
+                    </select>
+                  </div>
+                )}
               </div>
 
               {formData.generateMode === '1' && (
@@ -669,7 +718,7 @@ export const PaperConfig: React.FC = () => {
               {/* 显示已添加的口算题 */}
               {paperList.length > 0 && (
                 <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                  <h3 className="text-lg font-bold mb-3">当前口算题包含的内容 ({paperList.length} 份)</h3>
+                  <h3 className="text-lg font-bold mb-3">当前题目包含的内容 ({paperList.length} 份)</h3>
                   <div className="space-y-2">
                     {paperList.map((item, index) => (
                       <div key={index} className="bg-white p-3 rounded border">
@@ -677,11 +726,17 @@ export const PaperConfig: React.FC = () => {
                           <div>
                             <p className="font-medium">手动添加模式</p>
                             <p className="text-sm text-gray-600">题目数量: {item.numberOfFormulas}</p>
+                            <p className="text-sm text-gray-600">
+                              题型: {item.numberMode === 'decimal' ? `小数题（${item.decimalPlaces}位）` : '整数题'}
+                            </p>
                           </div>
                         ) : (
                           <div>
                             <p className="font-medium">自动生成模式 - {item.step}步运算</p>
                             <p className="text-sm text-gray-600">题目数量: {item.numberOfFormulas} | 结果范围: {item.resultMinValue}-{item.resultMaxValue}</p>
+                            <p className="text-sm text-gray-600">
+                              题型: {item.numberMode === 'decimal' ? `小数题（${item.decimalPlaces}位）` : '整数题'}
+                            </p>
                           </div>
                         )}
                       </div>
@@ -829,6 +884,14 @@ export const PaperConfig: React.FC = () => {
                   {formData.remainder === '3' && (
                     <p className="text-xs text-red-500 mt-1">⚠️ 结果余数不支持多步运算或求算数项</p>
                   )}
+                </div>
+
+                <div>
+                  <label className="block text-gray-700 mb-2">小数模式说明</label>
+                  <div className="text-sm text-gray-600 leading-6 bg-gray-50 border rounded p-3">
+                    <p>开启后，自动生成题目和手动添加题目都会按所选小数位数进行处理。</p>
+                    <p>整数模式下会忽略小数位数配置。</p>
+                  </div>
                 </div>
 
                 <div>

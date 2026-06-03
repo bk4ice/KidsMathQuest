@@ -1,343 +1,60 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Coins, CalendarDays, Leaf, Sparkles, Star, Trophy, Target } from 'lucide-react';
+import { ChevronLeft, Coins, CalendarDays, Sparkles, Target } from 'lucide-react';
 import { api } from '../services/api';
 import { Button, Card, Typewriter } from '../components/ui';
 
-type BadgeRecord = {
-  id: string;
-  badgeName: string;
+type BadgeWallEntry = {
   badgeType: string;
-  earnedAt: string;
+  groupKey: string;
+  title: string;
+  value: string;
+  description: string;
+  icon: string;
+  unlocked: boolean;
+  earnedAt: string | null;
 };
 
-type ChildProfile = {
-  name?: string;
-  points?: number;
-  level?: number;
-  streakDays?: number;
-  badges?: BadgeRecord[];
+type BadgeWallGroup = {
+  key: string;
+  title: string;
+  description: string;
+  accent: string;
+  accentDark: string;
+  badges: BadgeWallEntry[];
 };
 
-type PracticeSession = {
-  id: string;
-  completedCount?: number;
-  targetCount?: number;
-  accuracy?: number;
-  totalTime?: number;
-  date?: string;
-};
-
-type StatSummary = {
+type BadgeWallSummary = {
   streakDays: number;
   totalQuestions: number;
   averageAccuracy: number;
   bestAccuracy: number;
   perfectSessions: number;
+  sessionCount: number;
+  averageSecondsPerQuestion: number;
+  bestSecondsPerQuestion: number;
   points: number;
   level: number;
   badgeCount: number;
+  unlockedCount: number;
+  totalCount: number;
+};
+
+type BadgeWallPayload = {
+  childName: string;
+  summary: BadgeWallSummary;
+  groups: BadgeWallGroup[];
 };
 
 type BadgeSlot = {
-  groupKey: string;
   key: string;
   title: string;
   value: string;
   description: string;
   accent: string;
   accentDark: string;
-  icon:
-    | 'sprout'
-    | 'leaf'
-    | 'tree'
-    | 'lantern'
-    | 'fruit'
-    | 'shell'
-    | 'boat'
-    | 'map'
-    | 'target'
-    | 'star'
-    | 'sparkles'
-    | 'moon'
-    | 'house'
-    | 'flag'
-    | 'crown'
-    | 'gem'
-    | 'flower'
-    | 'compass'
-    | 'island';
-  isUnlocked: (summary: StatSummary) => boolean;
+  icon: string;
 };
-
-type BadgeGroup = {
-  key: string;
-  title: string;
-  description: string;
-  accent: string;
-  accentDark: string;
-};
-
-const BADGE_GROUPS: BadgeGroup[] = [
-  {
-    key: 'streak',
-    title: '连续学习',
-    description: '把学习变成每天都能完成的小习惯。',
-    accent: '#6cab4f',
-    accentDark: '#4f8d31',
-  },
-  {
-    key: 'practice',
-    title: '累计练习',
-    description: '记录孩子一步一步积累下来的努力。',
-    accent: '#e57f62',
-    accentDark: '#c85a42',
-  },
-  {
-    key: 'accuracy',
-    title: '正确率',
-    description: '鼓励孩子越做越准，找到自己的节奏。',
-    accent: '#f0c54b',
-    accentDark: '#d89d19',
-  },
-  {
-    key: 'level',
-    title: '成长等级',
-    description: '把阶段成长做成更有仪式感的里程碑。',
-    accent: '#78a8eb',
-    accentDark: '#5b87d6',
-  },
-  {
-    key: 'growth',
-    title: '综合成长',
-    description: '让坚持、准确和积累一起发光。',
-    accent: '#c38e62',
-    accentDark: '#9b6c45',
-  },
-];
-
-const BADGE_SLOTS: BadgeSlot[] = [
-  {
-    groupKey: 'streak',
-    key: 'streak-3',
-    title: '晨露小芽',
-    value: '3天',
-    description: '连续学习 3 天',
-    accent: '#86bf6f',
-    accentDark: '#5f9550',
-    icon: 'sprout',
-    isUnlocked: (summary) => summary.streakDays >= 3,
-  },
-  {
-    groupKey: 'streak',
-    key: 'streak-7',
-    title: '岛风嫩叶',
-    value: '7天',
-    description: '连续学习 7 天',
-    accent: '#6cab4f',
-    accentDark: '#4f8d31',
-    icon: 'leaf',
-    isUnlocked: (summary) => summary.streakDays >= 7,
-  },
-  {
-    groupKey: 'streak',
-    key: 'streak-14',
-    title: '枝叶舒展',
-    value: '14天',
-    description: '连续学习 14 天',
-    accent: '#58ab73',
-    accentDark: '#3f8a58',
-    icon: 'tree',
-    isUnlocked: (summary) => summary.streakDays >= 14,
-  },
-  {
-    groupKey: 'streak',
-    key: 'streak-30',
-    title: '林间守望者',
-    value: '30天',
-    description: '连续学习 30 天',
-    accent: '#3f8f57',
-    accentDark: '#2d6f43',
-    icon: 'lantern',
-    isUnlocked: (summary) => summary.streakDays >= 30,
-  },
-  {
-    groupKey: 'practice',
-    key: 'practice-20',
-    title: '第一盒彩笔',
-    value: '20题',
-    description: '累计完成 20 题',
-    accent: '#e57f62',
-    accentDark: '#c85a42',
-    icon: 'fruit',
-    isUnlocked: (summary) => summary.totalQuestions >= 20,
-  },
-  {
-    groupKey: 'practice',
-    key: 'practice-50',
-    title: '海边拾贝船',
-    value: '50题',
-    description: '累计完成 50 题',
-    accent: '#ea936c',
-    accentDark: '#c86d4b',
-    icon: 'shell',
-    isUnlocked: (summary) => summary.totalQuestions >= 50,
-  },
-  {
-    groupKey: 'practice',
-    key: 'practice-100',
-    title: '灯塔航线',
-    value: '100题',
-    description: '累计完成 100 题',
-    accent: '#d96f57',
-    accentDark: '#af543f',
-    icon: 'boat',
-    isUnlocked: (summary) => summary.totalQuestions >= 100,
-  },
-  {
-    groupKey: 'practice',
-    key: 'practice-300',
-    title: '岛屿探险家',
-    value: '300题',
-    description: '累计完成 300 题',
-    accent: '#c85a42',
-    accentDark: '#a44632',
-    icon: 'map',
-    isUnlocked: (summary) => summary.totalQuestions >= 300,
-  },
-  {
-    groupKey: 'accuracy',
-    key: 'accuracy-90',
-    title: '星轨回响',
-    value: '70%',
-    description: '平均正确率达到 70%',
-    accent: '#f0c54b',
-    accentDark: '#d89d19',
-    icon: 'target',
-    isUnlocked: (summary) => summary.averageAccuracy >= 70,
-  },
-  {
-    groupKey: 'accuracy',
-    key: 'accuracy-85',
-    title: '贝壳命中',
-    value: '85%',
-    description: '平均正确率达到 85%',
-    accent: '#f4bf46',
-    accentDark: '#c88d16',
-    icon: 'shell',
-    isUnlocked: (summary) => summary.averageAccuracy >= 85,
-  },
-  {
-    groupKey: 'accuracy',
-    key: 'accuracy-95',
-    title: '星砂闪耀',
-    value: '95%',
-    description: '平均正确率达到 95%',
-    accent: '#f6d25d',
-    accentDark: '#d3a92f',
-    icon: 'sparkles',
-    isUnlocked: (summary) => summary.averageAccuracy >= 95,
-  },
-  {
-    groupKey: 'accuracy',
-    key: 'accuracy-perfect',
-    title: '满分闪光',
-    value: '100%',
-    description: '至少拿到过一次满分',
-    accent: '#ffe16b',
-    accentDark: '#d8a92d',
-    icon: 'moon',
-    isUnlocked: (summary) => summary.perfectSessions >= 1,
-  },
-  {
-    groupKey: 'level',
-    key: 'level-2',
-    title: '小屋学徒',
-    value: 'Lv.2',
-    description: '达到 2 级',
-    accent: '#78a8eb',
-    accentDark: '#5b87d6',
-    icon: 'house',
-    isUnlocked: (summary) => summary.level >= 2,
-  },
-  {
-    groupKey: 'level',
-    key: 'level-4',
-    title: '田野伙伴',
-    value: 'Lv.4',
-    description: '达到 4 级',
-    accent: '#6f9fe5',
-    accentDark: '#4f7bc8',
-    icon: 'flag',
-    isUnlocked: (summary) => summary.level >= 4,
-  },
-  {
-    groupKey: 'level',
-    key: 'level-6',
-    title: '工匠岛民',
-    value: 'Lv.6',
-    description: '达到 6 级',
-    accent: '#7e85df',
-    accentDark: '#5f65bf',
-    icon: 'crown',
-    isUnlocked: (summary) => summary.level >= 6,
-  },
-  {
-    groupKey: 'level',
-    key: 'level-8',
-    title: '星光领航员',
-    value: 'Lv.8',
-    description: '达到 8 级',
-    accent: '#8f78e7',
-    accentDark: '#6f59c8',
-    icon: 'gem',
-    isUnlocked: (summary) => summary.level >= 8,
-  },
-  {
-    groupKey: 'growth',
-    key: 'growth-stable',
-    title: '风和小苗',
-    value: '平衡',
-    description: '连续学习 7 天且正确率达到 80%',
-    accent: '#c38e62',
-    accentDark: '#9b6c45',
-    icon: 'flower',
-    isUnlocked: (summary) => summary.streakDays >= 7 && summary.averageAccuracy >= 80,
-  },
-  {
-    groupKey: 'growth',
-    key: 'growth-precise',
-    title: '靶心航线',
-    value: '精准',
-    description: '累计完成 50 题且正确率达到 85%',
-    accent: '#d19d62',
-    accentDark: '#a47643',
-    icon: 'compass',
-    isUnlocked: (summary) => summary.totalQuestions >= 50 && summary.averageAccuracy >= 85,
-  },
-  {
-    groupKey: 'growth',
-    key: 'growth-persist',
-    title: '树屋守护者',
-    value: '坚持',
-    description: '连续学习 14 天且达到 4 级',
-    accent: '#b87b5e',
-    accentDark: '#8e5b44',
-    icon: 'tree',
-    isUnlocked: (summary) => summary.streakDays >= 14 && summary.level >= 4,
-  },
-  {
-    groupKey: 'growth',
-    key: 'growth-hero',
-    title: '全能岛主',
-    value: '全能',
-    description: '累计完成 100 题、正确率达到 90%、连续学习 14 天',
-    accent: '#a86be3',
-    accentDark: '#7d4fc0',
-    icon: 'island',
-    isUnlocked: (summary) => summary.totalQuestions >= 100 && summary.averageAccuracy >= 90 && summary.streakDays >= 14,
-  },
-];
 
 const formatCount = (value: number) => `${value.toLocaleString('zh-CN')}题`;
 
@@ -503,11 +220,12 @@ const renderBadgeGlyph = (slot: BadgeSlot, unlocked: boolean) => {
 };
 
 const BadgeMedal: React.FC<{
-  slot: BadgeSlot;
+  badge: BadgeWallEntry;
+  group: BadgeWallGroup;
   unlocked: boolean;
   earnedAt?: string | null;
   index: number;
-}> = ({ slot, unlocked, earnedAt, index }) => {
+}> = ({ badge, group, unlocked, earnedAt, index }) => {
   return (
     <div
       className={`badge-float group relative flex flex-col items-center text-center ${unlocked ? '' : 'opacity-55 grayscale-[0.95]'}`}
@@ -516,19 +234,19 @@ const BadgeMedal: React.FC<{
       <div className="relative w-full max-w-[160px]">
         <svg viewBox="0 0 160 176" className="h-auto w-full drop-shadow-[0_8px_10px_rgba(107,92,67,0.16)]">
           <defs>
-            <linearGradient id={`badge-gradient-${slot.key}`} x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor={slot.accent} />
-              <stop offset="100%" stopColor={slot.accentDark} />
+            <linearGradient id={`badge-gradient-${badge.badgeType}`} x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor={group.accent} />
+              <stop offset="100%" stopColor={group.accentDark} />
             </linearGradient>
           </defs>
 
-          <path d="M55 8 L80 44 L105 8 L112 44 L48 44 Z" fill={unlocked ? slot.accentDark : '#c9bead'} />
-          <path d="M40 45 L64 86 L52 92 L34 62 Z" fill={unlocked ? slot.accent : '#ddd0bd'} />
-          <path d="M120 45 L106 62 L88 92 L76 86 L100 45 Z" fill={unlocked ? slot.accent : '#ddd0bd'} />
-          <circle cx="80" cy="92" r="54" fill="#fff8e8" stroke={`url(#badge-gradient-${slot.key})`} strokeWidth="6" />
+          <path d="M55 8 L80 44 L105 8 L112 44 L48 44 Z" fill={unlocked ? group.accentDark : '#c9bead'} />
+          <path d="M40 45 L64 86 L52 92 L34 62 Z" fill={unlocked ? group.accent : '#ddd0bd'} />
+          <path d="M120 45 L106 62 L88 92 L76 86 L100 45 Z" fill={unlocked ? group.accent : '#ddd0bd'} />
+          <circle cx="80" cy="92" r="54" fill="#fff8e8" stroke={`url(#badge-gradient-${badge.badgeType})`} strokeWidth="6" />
           <circle cx="80" cy="92" r="42" fill={unlocked ? '#fff3c7' : '#eee1cf'} />
-          <circle cx="80" cy="92" r="30" fill={unlocked ? slot.accent : '#d8cdbb'} stroke={unlocked ? slot.accentDark : '#c6b8a4'} strokeWidth="3" />
-          {renderBadgeGlyph(slot, unlocked)}
+          <circle cx="80" cy="92" r="30" fill={unlocked ? group.accent : '#d8cdbb'} stroke={unlocked ? group.accentDark : '#c6b8a4'} strokeWidth="3" />
+          {renderBadgeGlyph({ key: badge.badgeType, title: badge.title, value: badge.value, description: badge.description, accent: group.accent, accentDark: group.accentDark, icon: badge.icon }, unlocked)}
           <text
             x="80"
             y="110"
@@ -538,18 +256,18 @@ const BadgeMedal: React.FC<{
             fontSize="20"
             fontWeight="900"
           >
-            {unlocked ? slot.value : '锁'}
+            {unlocked ? badge.value : '锁'}
           </text>
-          <path d="M58 144 L72 126 L80 138 L88 126 L102 144 L80 164 Z" fill={unlocked ? slot.accentDark : '#cabca7'} />
-          <path d="M52 144 L64 164 L76 152 L80 158 L84 152 L96 164 L108 144 L80 172 Z" fill={unlocked ? slot.accent : '#ddd0bd'} opacity={unlocked ? 1 : 0.95} />
+          <path d="M58 144 L72 126 L80 138 L88 126 L102 144 L80 164 Z" fill={unlocked ? group.accentDark : '#cabca7'} />
+          <path d="M52 144 L64 164 L76 152 L80 158 L84 152 L96 164 L108 144 L80 172 Z" fill={unlocked ? group.accent : '#ddd0bd'} opacity={unlocked ? 1 : 0.95} />
         </svg>
       </div>
 
       <div className="-mt-1 space-y-1 px-2">
         <div className="text-base font-black text-[#6e4a27]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
-          {slot.title}
+          {badge.title}
         </div>
-        <div className="text-sm font-bold text-[#8a7b66]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>{slot.description}</div>
+        <div className="text-sm font-bold text-[#8a7b66]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>{badge.description}</div>
         <div className={`inline-flex items-center rounded-full px-3 py-1 text-[11px] font-extrabold ${unlocked ? 'bg-[#f5c31c] text-[#725d42]' : 'bg-[#f0ece2] text-[#a89878]'}`} style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
           {unlocked ? '已获得' : '未解锁'}
           {earnedAt ? <span className="ml-2 text-[10px] font-bold opacity-80">{new Date(earnedAt).toLocaleDateString()}</span> : null}
@@ -561,8 +279,7 @@ const BadgeMedal: React.FC<{
 
 export const ChildBadges: React.FC = () => {
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<ChildProfile | null>(null);
-  const [history, setHistory] = useState<PracticeSession[]>([]);
+  const [badgeWall, setBadgeWall] = useState<BadgeWallPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -571,13 +288,8 @@ export const ChildBadges: React.FC = () => {
     setError('');
 
     try {
-      const [profileResponse, historyResponse] = await Promise.all([
-        api.children.getProfile(),
-        api.children.getHistory(),
-      ]);
-
-      setProfile(profileResponse.data ?? null);
-      setHistory(historyResponse.data ?? []);
+      const response = await api.children.getBadges();
+      setBadgeWall(response.data ?? null);
     } catch (err: any) {
       console.error('Failed to load badges page data:', err);
       setError(err.message || '加载成就数据失败，请稍后再试。');
@@ -590,61 +302,26 @@ export const ChildBadges: React.FC = () => {
     loadData();
   }, []);
 
-  const summary = useMemo<StatSummary>(() => {
-    const totalQuestions = history.reduce((sum, session) => sum + Number(session.completedCount ?? session.targetCount ?? 0), 0);
-    const averageAccuracy = history.length > 0
-      ? history.reduce((sum, session) => sum + Number(session.accuracy ?? 0), 0) / history.length
-      : 0;
-    const bestAccuracy = history.reduce((max, session) => Math.max(max, Number(session.accuracy ?? 0)), 0);
-    const perfectSessions = history.filter((session) => Number(session.accuracy ?? 0) >= 100).length;
-
-    return {
-      streakDays: Number(profile?.streakDays ?? 0),
-      totalQuestions,
-      averageAccuracy,
-      bestAccuracy,
-      perfectSessions,
-      points: Number(profile?.points ?? 0),
-      level: Number(profile?.level ?? 1),
-      badgeCount: profile?.badges?.length ?? 0,
-    };
-  }, [history, profile]);
-
-  const earnedBadges = profile?.badges ?? [];
-
-  const badgeSlots = useMemo(
-    () =>
-      BADGE_SLOTS.map((slot) => {
-        const matchedBadge = earnedBadges.find(
-          (badge) =>
-            badge.badgeName.includes(slot.title) ||
-            badge.badgeName.includes(slot.value) ||
-            badge.badgeName.includes(slot.description) ||
-            badge.badgeType.includes(slot.key),
-        );
-
-        return {
-          ...slot,
-          unlocked: slot.isUnlocked(summary),
-          earnedAt: matchedBadge?.earnedAt ?? null,
-        };
-      }),
-    [earnedBadges, summary],
-  );
-
-  const badgeGroups = useMemo(
-    () =>
-      BADGE_GROUPS.map((group) => ({
-        ...group,
-        badges: badgeSlots.filter((slot) => slot.groupKey === group.key),
-      })),
-    [badgeSlots],
-  );
-
-  const unlockedCount = badgeSlots.filter((slot) => slot.unlocked).length;
-  const encouragement = history.length === 0
-    ? '先完成一次练习，成就墙就会慢慢亮起来啦！'
-    : '看看你的成长轨迹，每一步都很棒。';
+  const summary: BadgeWallSummary = badgeWall?.summary ?? {
+    streakDays: 0,
+    totalQuestions: 0,
+    averageAccuracy: 0,
+    bestAccuracy: 0,
+    perfectSessions: 0,
+    sessionCount: 0,
+    averageSecondsPerQuestion: 0,
+    bestSecondsPerQuestion: 0,
+    points: 0,
+    level: 1,
+    badgeCount: 0,
+    unlockedCount: 0,
+    totalCount: 50,
+  };
+  const badgeGroups = badgeWall?.groups ?? [];
+  const unlockedCount = summary?.unlockedCount ?? 0;
+  const encouragement = summary && summary.totalQuestions > 0
+    ? '看看你的成长轨迹，每一步都很棒。'
+    : '先完成一次练习，成就墙就会慢慢亮起来啦！';
 
   if (loading) {
     return (
@@ -727,7 +404,7 @@ export const ChildBadges: React.FC = () => {
 
           <div className="hidden items-center gap-2 rounded-full border-2 border-[#c4b89e] bg-[rgb(247,243,223)] px-4 py-2 text-sm font-bold text-[#8a7b66] shadow-[0_4px_10px_rgba(107,92,67,0.42)] md:flex" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
             <Sparkles className="h-4 w-4 text-[#f5c31c]" />
-            已解锁 {unlockedCount} / {BADGE_SLOTS.length}
+            已解锁 {unlockedCount} / {summary?.totalCount ?? 0}
           </div>
         </div>
 
@@ -787,7 +464,7 @@ export const ChildBadges: React.FC = () => {
                 </div>
 
                 <div className="mt-3 rounded-[20px] border-2 border-[#c4b89e] bg-[rgb(247,243,223)] px-3 py-2.5 text-center text-xs font-bold text-[#8a7b66] shadow-[0_3px_0_0_#bdaea0]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
-                  {profile?.name ? `${profile.name}，继续收集更多成就吧！` : '继续收集更多成就吧！'}
+                  {badgeWall?.childName ? `${badgeWall.childName}，继续收集更多成就吧！` : '继续收集更多成就吧！'}
                 </div>
               </div>
             </aside>
@@ -795,7 +472,7 @@ export const ChildBadges: React.FC = () => {
             <main className="kmq-compact-panel relative rounded-[28px] bg-[rgb(247,243,223)] px-3 py-4 sm:px-4 sm:py-5 lg:px-5 lg:py-5">
               <div className="mb-3 flex flex-col gap-1.5 text-center lg:text-left">
                 <div className="kmq-compact-title text-2xl font-black leading-tight text-[#794f27] sm:text-[30px]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
-                  {profile?.name ? `${profile.name} 的奖章墙` : '我的奖章墙'}
+                  {badgeWall?.childName ? `${badgeWall.childName} 的奖章墙` : '我的奖章墙'}
                 </div>
                 <div className="kmq-compact-copy text-base font-bold text-[#9f927d] sm:text-lg" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
                   <Typewriter speed={80} autoPlay>
@@ -810,7 +487,7 @@ export const ChildBadges: React.FC = () => {
                 </div>
               </div>
 
-              {earnedBadges.length === 0 && (
+              {unlockedCount === 0 && (
                 <div className="mb-4 rounded-[24px] border-2 border-[#c4b89e] bg-[rgb(247,243,223)] px-4 py-3 text-center shadow-[0_4px_10px_rgba(107,92,67,0.42)]">
                   <div className="mx-auto mb-2 flex w-fit items-center gap-2 rounded-full bg-[rgb(247,243,223)] px-3 py-1.5 text-xs font-black text-[#8a7b66]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
                     <Sparkles className="h-4 w-4 text-[#f5c31c]" />
@@ -834,17 +511,18 @@ export const ChildBadges: React.FC = () => {
                         </div>
                       </div>
                       <div className="text-xs font-bold uppercase tracking-[0.18em] text-[#b39f7f]" style={{ fontFamily: '"MarukoGothic", "Nunito", sans-serif' }}>
-                        {group.badges.filter((badge) => badge.unlocked).length} / {group.badges.length}
+                        {group.badges.filter((badge: BadgeWallEntry) => badge.unlocked).length} / {group.badges.length}
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 xl:gap-5">
-                      {group.badges.map((slot, index) => (
+                      {group.badges.map((badge: BadgeWallEntry, index: number) => (
                         <BadgeMedal
-                          key={slot.key}
-                          slot={slot}
-                          unlocked={slot.unlocked}
-                          earnedAt={slot.earnedAt}
+                          key={badge.badgeType}
+                          badge={badge}
+                          group={group}
+                          unlocked={badge.unlocked}
+                          earnedAt={badge.earnedAt}
                           index={index}
                         />
                       ))}

@@ -168,8 +168,8 @@ export const Result: React.FC = () => {
           <div className="grid grid-cols-3 gap-6 mb-12">
             {[
               { label: '用时', value: formatTime(result.totalTime || 0), color: '#889df0', shadow: '#4a5a9a', name: 'history' },
-              { label: '正确率', value: `${result.accuracy || 0}%`, color: '#8ac68a', shadow: '#5a9e1e', name: 'target' },
-              { label: '完成题数', value: `${result.completedCount || 0} / ${result.totalCount || 0}`, color: '#f7cd67', shadow: '#dfa000', name: 'critterpedia' }
+              { label: '正确率', value: `${(result.accuracy || 0).toFixed(1)}%`, color: '#8ac68a', shadow: '#5a9e1e', name: 'target' },
+              { label: '完成情况', value: `${result.correctCount || 0} / ${result.questionInstances?.length || 0}`, color: '#f7cd67', shadow: '#dfa000', name: 'critterpedia' }
             ].map((stat, idx) => (
               <Card 
                 key={idx}

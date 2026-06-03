@@ -99,6 +99,10 @@ export const Practice: React.FC = () => {
     if (val === 'backspace') {
       setUserAnswer(prev => prev.slice(0, -1));
     } else {
+      // Prevent multiple decimal points
+      if (val === '.' && userAnswer.includes('.')) {
+        return;
+      }
       setUserAnswer(prev => prev + val);
     }
     inputRef.current?.focus();
@@ -274,7 +278,7 @@ export const Practice: React.FC = () => {
                     {val}
                   </button>
                 ))}
-                {/* 第二行：6-9 + 0 */}
+                {/* 第二行：6-9 + 0 + 小数点 */}
                 {[6, 7, 8, 9].map((val) => (
                   <button
                     key={val}
@@ -299,6 +303,17 @@ export const Practice: React.FC = () => {
                   }}
                 >
                   0
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleKeyClick('.')}
+                  className="kmq-compact-button h-16 text-2xl font-black rounded-3xl text-white transition-all hover:-translate-y-1 active:translate-y-2 focus:outline-none focus:ring-4 focus:ring-white/50"
+                  style={{ 
+                    backgroundColor: '#e18c6f',
+                    boxShadow: '0 8px 0 0 #c96e52'
+                  }}
+                >
+                  .
                 </button>
                 {/* 第三行：回车 + backspace */}
                 <button
@@ -334,7 +349,7 @@ export const Practice: React.FC = () => {
                     {val}
                   </button>
                 ))}
-                {/* 第二行：7-9 + 0 + backspace */}
+                {/* 第二行：7-9 + 0 + 小数点 + backspace */}
                 {[7, 8, 9].map((val) => (
                   <button
                     key={val}
@@ -362,8 +377,19 @@ export const Practice: React.FC = () => {
                 </button>
                 <button
                   type="button"
+                  onClick={() => handleKeyClick('.')}
+                  className="kmq-compact-button h-20 text-3xl font-black rounded-3xl text-white transition-all hover:-translate-y-1 active:translate-y-2 focus:outline-none focus:ring-4 focus:ring-white/50"
+                  style={{ 
+                    backgroundColor: '#e18c6f',
+                    boxShadow: '0 8px 0 0 #c96e52'
+                  }}
+                >
+                  .
+                </button>
+                <button
+                  type="button"
                   onClick={() => handleKeyClick('backspace')}
-                  className="kmq-compact-button h-20 rounded-3xl bg-[#f0e8d8] border-4 border-white flex items-center justify-center transition-all hover:-translate-y-1 active:translate-y-2 shadow-[0_8px_0_0_#d4c9b4]"
+                  className="kmq-compact-button h-20 rounded-3xl bg-[#f0e8d8] border-4 border-white flex items-center justify-center transition-all hover:-translate-y-1 active:translate-y-2 shadow-[0_8px 0 0_#d4c9b4]"
                 >
                   <Icon name="backspace" size={32} className="text-[#794f27] fill-current" />
                 </button>

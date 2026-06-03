@@ -1,8 +1,13 @@
 import { FormulasGenerator } from '../utils/formulasGenerator';
 import { PaperConfig, GeneratedQuestion } from '../types';
+import { normalizeDecimalAnswer, randomDecimalInRange } from '../utils/decimalMath';
 
 export class QuestionGeneratorService {
   generateQuestions(config: PaperConfig): GeneratedQuestion[] {
+    if (config.numberMode === 'decimal') {
+      return this.generateDecimalQuestions(config);
+    }
+
     try {
       const multistep: number[][] = [];
       const symbols: number[][] = [];
@@ -75,5 +80,130 @@ export class QuestionGeneratorService {
       console.error('Error generating questions:', error);
       return [];
     }
+  }
+
+  private generateDecimalQuestions(config: PaperConfig): GeneratedQuestion[] {
+    const questions: GeneratedQuestion[] = [];
+    const uniqueSet = new Set<string>();
+    const decimalPlaces = Number.isInteger(config.decimalPlaces ?? NaN) && (config.decimalPlaces ?? 0) >= 0
+      ? (config.decimalPlaces as number)
+      : 2;
+    const maxRetries = Math.max(config.numberOfFormulas * 5000, 10000);
+    const operandCount = config.step + 1;
+    const resultMin = Number(config.resultMinValue);
+    const resultMax = Number(config.resultMaxValue);
+
+    let retries = 0;
+
+    while (questions.length < config.numberOfFormulas && retries < maxRetries) {
+      retries++;
+
+      const operatorCodes: number[] = [];
+      for (let i = 1; i < operandCount; i++) {
+        const operatorPool = config.formulaList[i]?.operators && config.formulaList[i].operators.length > 0
+          ? config.formulaList[i].operators
+          : [1];
+        operatorCodes.push(operatorPool[Math.floor(Math.random() * operatorPool.length)]);
+      }
+
+      const operands: string[] = [];
+      let invalidQuestion = false;
+
+      for (let i = 0; i < operandCount; i++) {
+        const range = config.formulaList[i] ?? { min: 1, max: 9, operators: null };
+        const requiresNonZero = i > 0 && operatorCodes[i - 1] === 4;
+        let operand = randomDecimalInRange(range.min, range.max, decimalPlaces);
+        let guard = 0;
+
+        while (requiresNonZero && Number(operand) === 0 && guard < 20) {
+          operand = randomDecimalInRange(range.min, range.max, decimalPlaces);
+          guard++;
+        }
+
+        if (requiresNonZero && Number(operand) === 0) {
+          invalidQuestion = true;
+          break;
+        }
+
+        operands.push(operand);
+      }
+
+      if (invalidQuestion) {
+        continue;
+      }
+
+      const tokens: string[] = [];
+      for (let i = 0; i < operands.length; i++) {
+        tokens.push(operands[i]);
+        if (i < operatorCodes.length) {
+          tokens.push(this.getOperatorSymbol(operatorCodes[i]));
+        }
+      }
+
+      const expression = tokens.join('');
+
+      let evaluated = NaN;
+      try {
+        evaluated = Number(eval(expression));
+      } catch (error) {
+        continue;
+      }
+
+      if (!Number.isFinite(evaluated)) {
+        continue;
+      }
+
+      if (evaluated < resultMin || evaluated > resultMax) {
+        continue;
+      }
+
+      const answer = normalizeDecimalAnswer(evaluated, decimalPlaces);
+      let question = `${this.representExpression(expression)}=`;
+      let resultAnswer = answer;
+
+      if (config.whereIsResult === 1) {
+        const blankIndex = Math.floor(Math.random() * operands.length);
+        const blankTokens = [...tokens];
+        blankTokens[blankIndex * 2] = '__';
+        resultAnswer = normalizeDecimalAnswer(operands[blankIndex], decimalPlaces);
+        question = `${this.representExpression(blankTokens.join(''))}=${resultAnswer}`;
+      }
+
+      if (!question || uniqueSet.has(question)) {
+        continue;
+      }
+
+      uniqueSet.add(question);
+      questions.push({
+        question,
+        answer: resultAnswer
+      });
+    }
+
+    if (questions.length < config.numberOfFormulas) {
+      console.warn(`Could only generate ${questions.length}/${config.numberOfFormulas} decimal questions after ${retries} attempts.`);
+    }
+
+    return questions;
+  }
+
+  private getOperatorSymbol(symbol: number): string {
+    if (symbol === 1) {
+      return '+';
+    }
+    if (symbol === 2) {
+      return '-';
+    }
+    if (symbol === 3) {
+      return '*';
+    }
+    if (symbol === 4) {
+      return '/';
+    }
+    return '+';
+  }
+
+  private representExpression(expression: string): string {
+    return expression.replace(/\*/g, '×').replace(/\//g, '÷');
   }
 }

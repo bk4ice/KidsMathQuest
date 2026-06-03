@@ -18,6 +18,8 @@ export const AddPaperConfig: React.FC = () => {
     abdication: 1,
     remainder: 1,
     solution: 0,
+    numberMode: 'integer',
+    decimalPlaces: 2,
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -108,6 +110,33 @@ export const AddPaperConfig: React.FC = () => {
                 required
               />
             </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-gray-700 mb-2">运算模式</label>
+              <select
+                value={formData.numberMode}
+                onChange={(e) => setFormData({ ...formData, numberMode: e.target.value })}
+                className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="integer">整数模式</option>
+                <option value="decimal">小数模式</option>
+              </select>
+            </div>
+            {formData.numberMode === 'decimal' && (
+              <div>
+                <label className="block text-gray-700 mb-2">小数位数</label>
+                <select
+                  value={formData.decimalPlaces}
+                  onChange={(e) => setFormData({ ...formData, decimalPlaces: parseInt(e.target.value) })}
+                  className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value={1}>1 位</option>
+                  <option value={2}>2 位</option>
+                  <option value={3}>3 位</option>
+                </select>
+              </div>
+            )}
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2">运算类型</label>

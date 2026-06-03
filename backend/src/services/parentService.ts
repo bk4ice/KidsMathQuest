@@ -1,6 +1,15 @@
 import prisma from '../config/database';
 import { AppError } from '../middleware/errorHandler';
 
+function normalizePaperConfigMode(configData: any) {
+  const numberMode = configData.numberMode === 'decimal' ? 'decimal' : 'integer';
+  return {
+    ...configData,
+    numberMode,
+    decimalPlaces: numberMode === 'decimal' ? Number(configData.decimalPlaces ?? 2) : null
+  };
+}
+
 export class ParentService {
   async getChildren(parentId: string) {
     return await prisma.child.findMany({
@@ -138,7 +147,7 @@ export class ParentService {
     const newConfig = await prisma.paperConfig.create({
       data: {
         practiceConfigId: practiceConfig.id,
-        ...configData,
+        ...normalizePaperConfigMode(configData),
         isDefault: false,
         isActive: true
       }
@@ -200,6 +209,8 @@ export class ParentService {
       paperSubTitle: '姓名：__________ 日期：____月____日 时间：________ 对题：____道',
       fileNameGeneratedRule: 'title',
       generateMode: 1,
+      numberMode: 'integer',
+      decimalPlaces: null,
       isDefault: true,
       isActive: true
     };
@@ -241,7 +252,7 @@ export class ParentService {
     const updatedConfig = await prisma.paperConfig.update({
       where: { id: configId },
       data: {
-        ...configData,
+        ...normalizePaperConfigMode(configData),
         isActive: true,
         isDefault: config.isDefault
       }
@@ -355,6 +366,11 @@ export class ParentService {
       throw new AppError('Config not found', 404);
     }
 
+    const configWithDecimal = config as typeof config & {
+      numberMode?: 'integer' | 'decimal';
+      decimalPlaces?: number | null;
+    };
+
     // 参考 PrimarySchoolMathematics 的逻辑，支持 paperList（多个题型组合）
     const formulaList = JSON.parse(config.formulaList);
     const customFormulaList = config.customFormulaList ? JSON.parse(config.customFormulaList) : null;
@@ -386,6 +402,8 @@ export class ParentService {
         formulaList: formulaList,
         resultMinValue: config.resultMinValue,
         resultMaxValue: config.resultMaxValue,
+        numberMode: configWithDecimal.numberMode,
+        decimalPlaces: configWithDecimal.decimalPlaces,
         customFormulaList: customFormulaList
       }];
     }
@@ -397,9 +415,22 @@ export class ParentService {
 
       // 遍历 paperList 中的每个题型配置
       for (const paperConfig of effectivePaperList) {
+        const paperNumberMode = paperConfig.numberMode === 'decimal'
+          ? 'decimal'
+          : paperConfig.numberMode === 'integer'
+            ? 'integer'
+            : configWithDecimal.numberMode === 'decimal'
+              ? 'decimal'
+              : 'integer';
+        const paperDecimalPlaces = paperNumberMode === 'decimal'
+          ? (typeof paperConfig.decimalPlaces === 'number' ? paperConfig.decimalPlaces : configWithDecimal.decimalPlaces ?? 2)
+          : null;
+
         console.log('Processing config item:', {
           mode: paperConfig.customFormulaList ? 'manual' : 'auto',
-          count: paperConfig.numberOfFormulas || (paperConfig.customFormulaList?.length)
+          count: paperConfig.numberOfFormulas || (paperConfig.customFormulaList?.length),
+          numberMode: paperNumberMode,
+          decimalPlaces: paperDecimalPlaces
         });
         
         if (paperConfig.customFormulaList) {
@@ -421,7 +452,9 @@ export class ParentService {
             carry: config.carry,
             abdication: config.abdication,
             remainder: config.remainder,
-            solution: config.solution
+            solution: config.solution,
+            numberMode: paperNumberMode,
+            decimalPlaces: paperDecimalPlaces
           });
           
           if (generatedQuestions.length < paperConfig.numberOfFormulas) {

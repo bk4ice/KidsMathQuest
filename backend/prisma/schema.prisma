@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl"]
 }
 
@@ -60,8 +60,8 @@ model PaperConfig {
   configName            String            @map("config_name")
   step                  Int
   formulaList           String            @map("formula_list")
-  resultMinValue        Int               @map("result_min_value")
-  resultMaxValue        Int               @map("result_max_value")
+  resultMinValue        Float             @map("result_min_value")
+  resultMaxValue        Float             @map("result_max_value")
   numberOfFormulas      Int               @map("number_of_formulas")
   whereIsResult         Int               @default(0) @map("where_is_result")
   enableBrackets        Boolean           @default(false) @map("enable_brackets")
@@ -69,6 +69,8 @@ model PaperConfig {
   abdication            Int               @default(1)
   remainder             Int               @default(1)
   solution              Int               @default(0)
+  numberMode            String            @default("integer") @map("number_mode")
+  decimalPlaces         Int?              @map("decimal_places")
   numberOfPapers        Int               @default(1) @map("number_of_papers")
   numberOfPagerColumns  Int               @default(3) @map("number_of_pager_columns")
   paperTitle            String            @default("小学生口算题") @map("paper_title")

@@ -1,12 +1,14 @@
 import prisma from '../config/database';
 import { QuestionGeneratorService } from './questionGenerator';
-import { PaperConfig, GeneratedQuestion } from '../types';
+import { BadgeWallPayload, PaperConfig, GeneratedQuestion } from '../types';
 import { AppError } from '../middleware/errorHandler';
+import { compareAnswers, normalizeDecimalAnswer } from '../utils/decimalMath';
+import { calculateBadgeStats, buildBadgeWall, getUnlockedBadgeDefinitions } from '../utils/badgeEngine';
 
 const questionGenerator = new QuestionGeneratorService();
 
 // Helper function to evaluate simple arithmetic expressions
-function evaluateFormula(formula: string): string {
+function evaluateFormula(formula: string, decimalPlaces?: number | null): string {
   try {
     // Replace Chinese operators with JavaScript operators
     let expression = formula
@@ -16,6 +18,10 @@ function evaluateFormula(formula: string): string {
 
     // Evaluate the expression
     const result = eval(expression);
+
+    if (decimalPlaces != null) {
+      return normalizeDecimalAnswer(result, decimalPlaces);
+    }
 
     // Handle division results to ensure clean answers
     if (result.toString().includes('.')) {
@@ -28,6 +34,108 @@ function evaluateFormula(formula: string): string {
     console.error('Failed to evaluate formula:', formula, error);
     return '0';
   }
+}
+
+type BadgeContext = {
+  child: {
+    id: string;
+    name: string;
+    points: number;
+    level: number;
+    streakDays: number;
+  };
+  earnedBadges: Array<{
+    badgeType: string;
+    earnedAt: Date;
+  }>;
+  stats: ReturnType<typeof calculateBadgeStats>;
+  wall: BadgeWallPayload;
+};
+
+async function loadBadgeContext(childId: string, syncMissingBadges = false): Promise<BadgeContext> {
+  const child = await prisma.child.findUnique({
+    where: { id: childId },
+    select: {
+      id: true,
+      name: true,
+      points: true,
+      level: true,
+      streakDays: true
+    }
+  });
+
+  if (!child) {
+    throw new AppError('Child not found', 404);
+  }
+
+  const [sessions, earnedBadges] = await Promise.all([
+    prisma.practiceSession.findMany({
+      where: {
+        childId,
+        status: 'completed'
+      },
+      select: {
+        completedCount: true,
+        correctCount: true,
+        accuracy: true,
+        totalTime: true
+      }
+    }),
+    prisma.badge.findMany({
+      where: { childId },
+      orderBy: { earnedAt: 'asc' },
+      select: {
+        badgeType: true,
+        earnedAt: true
+      }
+    })
+  ]);
+
+  const stats = calculateBadgeStats({
+    streakDays: child.streakDays,
+    points: child.points,
+    level: child.level,
+    sessions
+  });
+
+  if (syncMissingBadges) {
+    const existingBadgeTypes = new Set(earnedBadges.map((badge) => badge.badgeType));
+    const unlockedDefinitions = getUnlockedBadgeDefinitions(stats);
+    const missingBadges = unlockedDefinitions.filter((definition) => !existingBadgeTypes.has(definition.badgeType));
+
+    if (missingBadges.length > 0) {
+      await prisma.badge.createMany({
+        data: missingBadges.map((definition) => ({
+          childId,
+          badgeName: definition.title,
+          badgeType: definition.badgeType
+        }))
+      });
+
+      const refreshedBadges = await prisma.badge.findMany({
+        where: { childId },
+        orderBy: { earnedAt: 'asc' },
+        select: {
+          badgeType: true,
+          earnedAt: true
+        }
+      });
+
+      return {
+        child,
+        earnedBadges: refreshedBadges,
+        stats,
+        wall: buildBadgeWall(child.name, stats, refreshedBadges)
+      };
+    }
+  }
+
+  return {
+    child,
+    earnedBadges,
+    stats,
+    wall: buildBadgeWall(child.name, stats, earnedBadges)
+  };
 }
 
 export class ChildService {
@@ -178,6 +286,11 @@ export class ChildService {
 
     console.log('Session found with paperConfig:', session.paperConfig.id);
 
+    const sessionPaperConfig = session.paperConfig as typeof session.paperConfig & {
+      numberMode?: 'integer' | 'decimal';
+      decimalPlaces?: number | null;
+    };
+
     if (session.questionInstances && session.questionInstances.length > 0) {
       console.log('Session already has questions:', session.questionInstances.length);
       return session;
@@ -200,13 +313,23 @@ export class ChildService {
           for (const paperConfig of paperList) {
             console.log('Processing paperConfig:', paperConfig);
             let configQuestions: GeneratedQuestion[] = [];
+            const paperNumberMode = paperConfig.numberMode === 'decimal'
+              ? 'decimal'
+              : paperConfig.numberMode === 'integer'
+                ? 'integer'
+                : sessionPaperConfig.numberMode === 'decimal'
+                  ? 'decimal'
+                  : 'integer';
+            const paperDecimalPlaces = paperNumberMode === 'decimal'
+              ? (typeof paperConfig.decimalPlaces === 'number' ? paperConfig.decimalPlaces : sessionPaperConfig.decimalPlaces ?? 2)
+              : null;
 
             if (paperConfig.customFormulaList) {
               // 手动添加模式：直接使用自定义公式
               console.log('Manual mode with customFormulaList');
               configQuestions = paperConfig.customFormulaList.map((item: any) => ({
                 question: item.formula,
-                answer: evaluateFormula(item.formula)
+                answer: evaluateFormula(item.formula, paperDecimalPlaces)
               }));
             } else {
               // 自动生成模式：使用配置参数生成
@@ -230,7 +353,9 @@ export class ChildService {
                 carry: session.paperConfig.carry,
                 abdication: session.paperConfig.abdication,
                 remainder: session.paperConfig.remainder,
-                solution: session.paperConfig.solution
+                solution: session.paperConfig.solution,
+                numberMode: paperNumberMode,
+                decimalPlaces: paperDecimalPlaces
               };
 
               console.log('Generating questions with config:', config);
@@ -263,6 +388,8 @@ export class ChildService {
 
         console.log('Parsed formulaList:', formulaList);
 
+        const numberMode = sessionPaperConfig.numberMode === 'decimal' ? 'decimal' : 'integer';
+
         const config: PaperConfig = {
           step: session.paperConfig.step,
           formulaList: formulaList,
@@ -274,7 +401,9 @@ export class ChildService {
           carry: session.paperConfig.carry,
           abdication: session.paperConfig.abdication,
           remainder: session.paperConfig.remainder,
-          solution: session.paperConfig.solution
+          solution: session.paperConfig.solution,
+          numberMode,
+          decimalPlaces: sessionPaperConfig.decimalPlaces
         };
 
         console.log('Config:', config);
@@ -344,6 +473,9 @@ export class ChildService {
       where: {
         id: sessionId,
         childId
+      },
+      include: {
+        paperConfig: true
       }
     });
 
@@ -359,7 +491,19 @@ export class ChildService {
       throw new AppError('Question not found', 404);
     }
 
-    const isCorrect = userAnswer === question.correctAnswer;
+    const sessionPaperConfig = session.paperConfig as typeof session.paperConfig & {
+      decimalPlaces?: number | null;
+    };
+
+    const inferredDecimalPlaces = question.correctAnswer.includes('.')
+      ? question.correctAnswer.split('.')[1]?.length ?? null
+      : null;
+
+    const isCorrect = compareAnswers(
+      userAnswer,
+      question.correctAnswer,
+      inferredDecimalPlaces ?? sessionPaperConfig?.decimalPlaces
+    );
 
     await prisma.questionAttempt.create({
       data: {
@@ -514,6 +658,8 @@ export class ChildService {
       });
     }
 
+    await loadBadgeContext(childId, true);
+
     return {
       accuracy,
       pointsEarned,
@@ -543,10 +689,8 @@ export class ChildService {
   }
 
   async getBadges(childId: string) {
-    return await prisma.badge.findMany({
-      where: { childId },
-      orderBy: { earnedAt: 'desc' }
-    });
+    const context = await loadBadgeContext(childId, true);
+    return context.wall;
   }
 
   async getHistory(childId: string) {
@@ -593,6 +737,8 @@ export class ChildService {
   }
 
   async getProfile(childId: string) {
+    await loadBadgeContext(childId, true);
+
     const child = await prisma.child.findUnique({
       where: { id: childId },
       include: {
