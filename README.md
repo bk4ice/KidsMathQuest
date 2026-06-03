@@ -32,6 +32,7 @@
     - [方式一：Docker Hub 镜像（推荐，5 分钟启动）](#方式一docker-hub-镜像推荐5-分钟启动)
     - [方式二：本地构建（用于二次开发）](#方式二本地构建用于二次开发)
     - [常用命令](#常用命令)
+    - [方式三：在线体验（socialistic.ai）](#方式三在线体验socialisticai)
   - [本地开发指南](#本地开发指南)
     - [后端开发](#后端开发)
     - [前端开发](#前端开发)
@@ -305,6 +306,14 @@ docker-compose down
 # 停止并删除数据卷（谨慎使用）
 docker-compose down -v
 ```
+
+### 方式三：在线体验（socialistic.ai）
+
+无需安装 Docker，直接在线配置规则、出题、打印试卷：
+
+[🚀 在线试一下](https://socialistic.ai/zh/skill/kidsmathquest-practice-generator-57f816)
+
+适合快速体验 KidsMathQuest 的核心功能，感受配置流程和出题效果。
 
 ## 本地开发指南
 
