@@ -76,7 +76,7 @@ export const PaperRecords: React.FC = () => {
                     <div>
                       <h3 className="text-lg font-bold">{config.paperTitle}</h3>
                       <p className="text-gray-500">
-                        日期: {formatDate(record.generatedAt)} | 题目数: {questions.length}
+                        日期: {formatDate(record.generatedAt)} | 题目数: {questions.flat().length}
                       </p>
                       <p className="text-sm text-gray-400">
                         步数: {config.step} | 
