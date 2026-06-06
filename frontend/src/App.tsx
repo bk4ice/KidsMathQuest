@@ -20,6 +20,7 @@ import { PracticeConfig } from './pages/PracticeConfig';
 import { ChildHistory } from './pages/ChildHistory';
 import { ChildBadges } from './pages/ChildBadges';
 import { WrongQuestions } from './pages/WrongQuestions';
+import { AiMentor } from './pages/AiMentor';
 import { Cursor } from 'animal-island-ui';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode; requireParent?: boolean }> = ({ 
@@ -98,6 +99,14 @@ function App() {
             element={
               <ProtectedRoute requireParent>
                 <ParentDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ai-mentor"
+            element={
+              <ProtectedRoute requireParent>
+                <AiMentor />
               </ProtectedRoute>
             }
           />

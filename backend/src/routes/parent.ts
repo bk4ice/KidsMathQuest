@@ -18,7 +18,10 @@ import {
   deletePaperRecord,
   updatePracticeConfig,
   getPracticeConfig,
-  getPracticeSessionDetail
+  getPracticeSessionDetail,
+  getAIChatHistory,
+  sendAIChatMessage,
+  clearAIChatHistory
 } from '../controllers/parentController';
 
 const router = Router();
@@ -43,5 +46,10 @@ router.get('/children/:id/papers/:paperId', getPaperRecordById);
 router.delete('/children/:id/papers/:paperId', deletePaperRecord);
 router.get('/children/:id/practice-config', getPracticeConfig);
 router.put('/children/:id/practice-config', updatePracticeConfig);
+
+// AI Chat Routes
+router.get('/ai/chat/:childId/history', getAIChatHistory);
+router.post('/ai/chat', sendAIChatMessage);
+router.delete('/ai/chat/:childId', clearAIChatHistory);
 
 export default router;

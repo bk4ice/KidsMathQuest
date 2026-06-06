@@ -13,6 +13,12 @@
 
 </div>
 
+## 📢 News
+
+**2026-06-06** 🤖 **新增 AI 导师功能** — 集成智能 AI 导师"狸学长"，支持多轮对话、学习诊断、个性化试卷推荐。支持 OpenAI、Anthropic、阿里云 DashScope、vLLM 等多种 LLM 提供商。采用 SSE 流式输出，支持 Markdown 格式渲染。AI 功能为可选配置，不影响核心练习功能使用。详见 [AI 导师配置说明](#ai-导师配置)。
+
+---
+
 ## 目录
 
 - [KidsMathQuest](#kidsmathquest)
@@ -34,6 +40,11 @@
   - [环境变量](#环境变量)
     - [后端 `.env`](#后端-env)
     - [说明](#说明)
+  - [AI 导师配置](#ai-导师配置)
+    - [功能特性](#功能特性)
+    - [配置步骤](#配置步骤)
+    - [使用方法](#使用方法)
+    - [可选功能说明](#可选功能说明)
   - [项目结构](#项目结构)
   - [常见问题 (FAQ)](#常见问题-faq)
     - [如何修改端口？](#如何修改端口)
@@ -89,6 +100,7 @@ KidsMathQuest 是一个面向 6-12 岁儿童的数学学习应用，采用**家�
 | 练习配置 | 自定义每日题目数量、难度范围、运算类型，支持整数/小数模式与 1/2/3 位小数 |
 | 试卷生成 | 自动生成 A4 数学试卷，支持打印 |
 | 学习统计 | 正确率分析、连续打卡天数、历史记录追踪 |
+| AI 导师 | 智能对话诊断、个性化试卷推荐、学习建议（可选功能） |
 
 ### 应用截图
 
@@ -312,6 +324,21 @@ docker-compose down -v
 | `DATABASE_URL` | 是 | - | SQLite 文件路径（本地建议 `file:./prisma/dev.db`，Docker 会覆盖为 `/app/prisma/dev.db`） |
 | `JWT_SECRET` | **是** | - | **必须修改！** JWT 签名密钥 |
 | `NODE_ENV` | 否 | `development` | 运行环境 |
+| `AI_PROVIDER` | 否 | `openai` | AI 导师 LLM 提供商：`vllm` | `openai` | `anthropic` | `aliyun` |
+| `AI_OPENAI_BASE_URL` | 否 | `https://api.openai.com/v1` | OpenAI API 地址 |
+| `AI_OPENAI_API_KEY` | 否 | - | OpenAI API Key |
+| `AI_OPENAI_MODEL` | 否 | `gpt-4o-mini` | OpenAI 模型名称 |
+| `AI_VLLM_BASE_URL` | 否 | - | vLLM 自部署服务地址 |
+| `AI_VLLM_API_KEY` | 否 | - | vLLM API Key |
+| `AI_VLLM_MODEL` | 否 | - | vLLM 模型名称 |
+| `AI_ANTHROPIC_BASE_URL` | 否 | `https://api.anthropic.com/v1` | Anthropic API 地址 |
+| `AI_ANTHROPIC_API_KEY` | 否 | - | Anthropic API Key |
+| `AI_ANTHROPIC_MODEL` | 否 | `claude-sonnet-4-20250514` | Anthropic 模型名称 |
+| `AI_ALIYUN_BASE_URL` | 否 | `https://dashscope.aliyuncs.com/compatible-mode/v1` | 阿里云 DashScope API 地址 |
+| `AI_ALIYUN_API_KEY` | 否 | - | 阿里云 API Key |
+| `AI_ALIYUN_MODEL` | 否 | `qwen3.6-plus` | 阿里云模型名称 |
+| `AI_CHAT_RETENTION_DAYS` | 否 | `14` | AI 对话历史保留天数 |
+| `AI_CHAT_MAX_ROUNDS` | 否 | `20` | AI 对话最大轮数 |
 
 ### 说明
 
@@ -319,6 +346,89 @@ docker-compose down -v
 - 本地开发时，`DATABASE_URL` 保持相对路径 `file:./prisma/dev.db`，这样从 `backend` 目录启动最稳定
 - Docker 会读取根目录 `.env`，并在 `docker-compose.yml` 中覆盖为容器内路径 `file:/app/prisma/dev.db`
 - 如果你已经有现成的 `backend/prisma/dev.db`，直接挂载后就能继续使用
+- **AI 导师功能为可选配置**：如果不配置 AI 相关环境变量，AI 导师功能将不可用，但不影响项目的其他核心功能（练习、试卷管理等）正常使用
+
+## AI 导师配置
+
+AI 导师"狸学长"是 KidsMathQuest 的智能学习助手，支持多轮对话、学习诊断、个性化试卷推荐等功能。
+
+### 功能特性
+
+- **多轮对话**：支持连续对话，自动保存对话历史
+- **学习诊断**：分析孩子的学习数据，提供个性化建议
+- **试卷推荐**：根据诊断结果自动生成个性化试卷配置
+- **工具调用**：集成数据库查询工具，提供真实数据反馈
+- **流式输出**：采用 SSE（Server-Sent Events）实现实时流式响应
+- **Markdown 支持**：AI 回复支持 Markdown 格式渲染（标题、列表、代码块等）
+- **多提供商支持**：支持 OpenAI、Anthropic、阿里云 DashScope、vLLM 等多种 LLM
+
+### 配置步骤
+
+1. **选择 LLM 提供商**
+
+在 `.env` 文件中设置 `AI_PROVIDER`：
+```bash
+AI_PROVIDER=openai  # 可选: vllm | openai | anthropic | aliyun
+```
+
+2. **配置对应的 API Key**
+
+根据选择的提供商配置相应的环境变量：
+
+**OpenAI 配置**：
+```bash
+AI_OPENAI_BASE_URL=https://api.openai.com/v1
+AI_OPENAI_API_KEY=sk-your-openai-api-key
+AI_OPENAI_MODEL=gpt-4o-mini
+```
+
+**Anthropic 配置**：
+```bash
+AI_ANTHROPIC_BASE_URL=https://api.anthropic.com/v1
+AI_ANTHROPIC_API_KEY=sk-ant-your-anthropic-api-key
+AI_ANTHROPIC_MODEL=claude-sonnet-4-20250514
+```
+
+**阿里云 DashScope 配置**：
+```bash
+AI_ALIYUN_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+AI_ALIYUN_API_KEY=sk-your-aliyun-api-key
+AI_ALIYUN_MODEL=qwen3.6-plus
+```
+
+**vLLM 自部署配置**：
+```bash
+AI_VLLM_BASE_URL=http://your-vllm-server:port/v1
+AI_VLLM_API_KEY=your-vllm-api-key
+AI_VLLM_MODEL=your-model-name
+```
+
+3. **重启服务**
+
+```bash
+# Docker 部署
+docker-compose down
+docker-compose up
+
+# 本地开发
+# 后端和前端重启即可
+```
+
+### 使用方法
+
+1. 登录家长端后，点击顶部"咨询狸学长 AI"按钮进入 AI 导师页面
+2. 选择"综合咨询"或具体的孩子进行对话
+3. 可以使用快速指令或自由输入问题
+4. AI 会调用工具查询真实数据，提供个性化建议
+5. 对话中 AI 可以推荐试卷配置，同意后会自动保存到"狸学长推荐配置"
+
+### 可选功能说明
+
+- AI 导师功能为**可选配置**，不配置不影响核心功能使用
+- 未配置时进入 AI 导师页面会显示配置提示横幅
+- 建议使用 OpenAI 或阿里云 DashScope 以获得最佳体验
+- 对话历史默认保留 14 天，可通过 `AI_CHAT_RETENTION_DAYS` 调整
+- 单次对话默认最多 20 轮，可通过 `AI_CHAT_MAX_ROUNDS` 调整
 
 ## 项目结构
 

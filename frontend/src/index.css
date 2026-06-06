@@ -228,3 +228,18 @@ body {
   animation: animal-fade-up 0.5s var(--animal-ease) forwards;
 }
 
+/* Animal Island UI 背景图片样式 */
+.animal-home-bg {
+  background: url('/animal-content-bg.webp') center/cover no-repeat, #7DC395;
+  animation: 80s linear 0s infinite normal none running bgScroll;
+}
+
+@keyframes bgScroll {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 0% 100%;
+  }
+}
+

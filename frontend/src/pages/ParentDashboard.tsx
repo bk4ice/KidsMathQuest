@@ -86,12 +86,20 @@ export const ParentDashboard: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">我的孩子</h2>
-          <button
-            onClick={() => navigate('/children/new')}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            添加孩子
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => navigate('/ai-mentor')}
+              className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 flex items-center gap-1.5 font-bold transition-all shadow-[0_3px_0_0_#11a89b] active:translate-y-[1px] active:shadow-[0_1px_0_0_#11a89b]"
+            >
+              <span>🦝</span> 咨询狸学长 AI
+            </button>
+            <button
+              onClick={() => navigate('/children/new')}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 font-bold"
+            >
+              添加孩子
+            </button>
+          </div>
         </div>
 
         {children.length === 0 ? (

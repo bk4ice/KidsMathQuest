@@ -163,6 +163,20 @@ export const api = {
 
     getPracticeSessionDetail: (childId: string, sessionId: string) =>
       api.request(`/parents/children/${childId}/practice-sessions/${sessionId}`),
+
+    getAIChatHistory: (childId: string) =>
+      api.request(`/parents/ai/chat/${childId}/history`),
+
+    sendAIChatMessage: (childId: string, message: string) =>
+      api.request('/parents/ai/chat', {
+        method: 'POST',
+        body: JSON.stringify({ childId, message }),
+      }),
+
+    clearAIChatHistory: (childId: string) =>
+      api.request(`/parents/ai/chat/${childId}`, {
+        method: 'DELETE',
+      }),
   },
 
   children: {
