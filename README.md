@@ -24,7 +24,6 @@
     - [应用截图](#应用截图)
   - [技术架构](#技术架构)
     - [系统架构图](#系统架构图)
-    - [数据流示意图](#数据流示意图)
     - [部署流程图](#部署流程图)
   - [快速开始](#快速开始)
     - [前置要求](#前置要求)
@@ -32,10 +31,6 @@
     - [方式二：本地开发](#方式二本地开发)
     - [常用命令](#常用命令)
     - [方式三：在线体验（socialistic.ai）](#方式三在线体验socialisticai)
-  - [本地开发指南](#本地开发指南)
-    - [后端开发](#后端开发)
-    - [前端开发](#前端开发)
-    - [数据库迁移（开发时）](#数据库迁移开发时)
   - [环境变量](#环境变量)
     - [后端 `.env`](#后端-env)
     - [说明](#说明)
@@ -159,25 +154,6 @@ graph TB
     BE -->|Prisma ORM| D2
 ```
 
-### 数据流示意图
-
-```mermaid
-graph LR
-    subgraph Parent[家长端流程]
-        P1[浏览器] -->|注册/登录| P2[后端API]
-        P2 -->|添加儿童| P3[数据库]
-        P1 -->|配置练习题目| P2
-        P1 -->|查看学习统计| P2
-    end
-    
-    subgraph Child[儿童端流程]
-        C1[浏览器] -->|儿童登录| C2[后端API]
-        C2 -->|获取题目| C3[数据库]
-        C1 -->|提交答案| C2
-        C1 -->|记录结果/解锁徽章| C2
-    end
-```
-
 **前端技术栈**
 - React 18 + TypeScript + Vite
 - Tailwind CSS 响应式布局
@@ -291,6 +267,14 @@ npm install
 npm run dev
 ```
 
+**数据库迁移**（开发时）：
+```bash
+cd backend
+npx prisma db push        # 首次运行或 schema 变更后同步数据库
+npx prisma migrate dev   # 创建迁移
+npx prisma studio         # 可视化数据库管理
+```
+
 ### 常用命令
 
 ```bash
@@ -316,35 +300,6 @@ docker-compose down -v
 [🚀 在线试一下](https://socialistic.ai/zh/skill/kidsmathquest-practice-generator-57f816?utm_source=github&utm_medium=readme&utm_campaign=20260601-kids-practice-toolsmiths&utm_content=hyperlink)
 
 适合快速体验交互式的出题功能，感受配置流程和出题效果。
-
-## 本地开发指南
-
-### 后端开发
-
-```bash
-cd backend
-npm install
-npm run dev        # 启动开发服务器（带热重载）
-```
-
-### 前端开发
-
-```bash
-cd frontend
-npm install
-npm run dev        # 启动 Vite 开发服务器
-```
-
-访问 http://localhost:3000
-
-### 数据库迁移（开发时）
-
-```bash
-cd backend
-npx prisma db push        # 首次运行或 schema 变更后同步数据库
-npx prisma migrate dev   # 创建迁移
-npx prisma studio         # 可视化数据库管理
-```
 
 ## 环境变量
 

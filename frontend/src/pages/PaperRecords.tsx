@@ -52,7 +52,7 @@ export const PaperRecords: React.FC = () => {
     <div className="min-h-screen bg-gray-100">
       <nav className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <button onClick={() => navigate(`/children/${id}/paper-config`)} className="text-blue-500 hover:text-blue-700">
+          <button onClick={() => navigate(`/dashboard`)} className="text-blue-500 hover:text-blue-700">
             ← 返回
           </button>
         </div>
