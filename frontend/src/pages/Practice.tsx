@@ -243,11 +243,12 @@ export const Practice: React.FC = () => {
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSubmitAnswer()}
-                  className={`w-48 h-32 text-7xl text-center font-black rounded-[40px] border-[6px] transition-all duration-200 outline-none ${
+                  className={`w-48 h-32 text-center font-black rounded-[40px] border-[6px] transition-all duration-200 outline-none ${
                     feedback?.isCorrect ? 'border-[#6fba2c] bg-[#e6f9f6] text-[#6fba2c] shadow-[0_8px_0_0_#5a9e1e]' : 
                     feedback?.isCorrect === false ? 'border-[#e05a5a] bg-[#fff5f5] text-[#e05a5a] shadow-[0_8px_0_0_#c94444]' : 
                     'border-[#c4b89e] bg-[rgb(247,243,223)] text-[#794f27] shadow-[0_8px_0_0_#d4c9b4] focus:border-[#ffcc00] focus:shadow-[0_8px_0_0_#e0b800]'
                   }`}
+                  style={{ fontSize: `${Math.max(1.5, 4.5 - userAnswer.length * 0.3)}rem` }}
                   autoFocus
                   disabled={!!feedback}
                 />
