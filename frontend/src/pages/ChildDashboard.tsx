@@ -21,8 +21,33 @@ export const ChildDashboard: React.FC = () => {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  const LAST_REFRESH_KEY = 'child_dashboard_last_refresh';
+  const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 分钟
+
+  const shouldRefresh = () => {
+    const last = localStorage.getItem(LAST_REFRESH_KEY);
+    if (!last) return true;
+    return Date.now() - parseInt(last, 10) > REFRESH_INTERVAL_MS;
+  };
+
+  const recordRefresh = () => {
+    localStorage.setItem(LAST_REFRESH_KEY, Date.now().toString());
+  };
+
+  const refreshIfNeeded = () => {
+    if (document.visibilityState === 'visible' && shouldRefresh()) {
+      loadData();
+    }
+  };
+
   useEffect(() => {
     loadData();
+    document.addEventListener('visibilitychange', refreshIfNeeded);
+    window.addEventListener('focus', refreshIfNeeded);
+    return () => {
+      document.removeEventListener('visibilitychange', refreshIfNeeded);
+      window.removeEventListener('focus', refreshIfNeeded);
+    };
   }, []);
 
   const loadData = async () => {
@@ -65,6 +90,7 @@ export const ChildDashboard: React.FC = () => {
         console.error('Failed to load profile separately:', profileError);
       }
     } finally {
+      recordRefresh();
       setLoading(false);
     }
   };
