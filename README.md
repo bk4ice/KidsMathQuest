@@ -1,5 +1,11 @@
 # KidsMathQuest
 
+<div align="right">
+
+[English](README_EN.md) | 简体中文
+
+</div>
+
 <div align="center">
 
 <img src="screenshots/banner.png" alt="项目 Banner" width="300">
